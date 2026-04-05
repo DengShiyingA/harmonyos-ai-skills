@@ -12,6 +12,10 @@
 ![AI Tools](https://img.shields.io/badge/AI_Tools-11+-purple)
 ![AGENTS.md](https://img.shields.io/badge/AGENTS.md-Standard-green)
 
+![Stars](https://img.shields.io/github/stars/DengShiyingA/harmonyos-ai-skills?style=social)
+![Last Commit](https://img.shields.io/github/last-commit/DengShiyingA/harmonyos-ai-skills)
+![Issues](https://img.shields.io/github/issues/DengShiyingA/harmonyos-ai-skills)
+
 <br/>
 
 **Ask Cursor to write HarmonyOS — it hands you React.**
@@ -30,9 +34,27 @@ The problem isn't the AI — it's that no one's ever fed it HarmonyOS knowledge.
 
 ---
 
+## ⚡ Quick start (Claude Code, 30 seconds)
+
+```bash
+git clone https://github.com/DengShiyingA/harmonyos-ai-skills.git ~/src/harmonyos-ai-skills
+mkdir -p ~/.claude/skills
+ln -s ~/src/harmonyos-ai-skills/harmonyos-development ~/.claude/skills/harmonyos-development
+# Restart Claude Code, then ask: "What skills are available?"
+```
+
+Using a different tool? See [all install options below](#installation--detailed-instructions-per-tool).
+
+---
+
 A portable knowledge pack that turns any AI coding assistant into a competent **HarmonyOS (鸿蒙) NEXT** engineer. Write the knowledge once — [`harmonyos-development/SKILL.md`](./harmonyos-development/SKILL.md) — and install it into every major AI coding tool via pre-built drop-in files.
 
-**What is a "skill"?** A skill is a chunk of domain knowledge (in Markdown) that an AI coding tool loads as background context when you chat with it. Once installed, the AI "knows" the domain — it will give you HarmonyOS-correct answers instead of generic TypeScript / React advice. Different tools call them different things (skills, rules, instructions, system prompt), but they all work the same way: **extra text prepended to the model's context**.
+<details>
+<summary><b>🤔 What is a "skill"?</b> (click to expand)</summary>
+
+A skill is a chunk of domain knowledge (in Markdown) that an AI coding tool loads as background context when you chat with it. Once installed, the AI "knows" the domain — it will give you HarmonyOS-correct answers instead of generic TypeScript / React advice. Different tools call them different things (skills, rules, instructions, system prompt), but they all work the same way: **extra text prepended to the model's context**.
+
+</details>
 
 **Requirements:** `git` and `curl` (or just copy-paste for web tools). No other dependencies.
 
@@ -94,7 +116,7 @@ The two files differ only slightly: `plain/` is the raw Markdown; `system-prompt
 All `curl` commands below use a shell variable `$RAW` — run this once in your terminal first (it stays set for the rest of your session):
 
 ```bash
-export RAW=https://raw.githubusercontent.com/DengShiyingA/harmonyos-ai-skills/claude/liquid-glass-skills-guide-0xUpZ
+export RAW=https://raw.githubusercontent.com/DengShiyingA/harmonyos-ai-skills/main
 ```
 
 ### Claude Code CLI
