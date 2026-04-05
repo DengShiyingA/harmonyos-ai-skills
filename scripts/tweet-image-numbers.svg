@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <linearGradient id="card1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#4c1d95"/>
+    </linearGradient>
+    <linearGradient id="card2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#0e7490"/>
+    </linearGradient>
+    <linearGradient id="card3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="card4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="#0a0a0f"/>
+
+  <!-- Title -->
+  <text x="600" y="80" font-size="42" font-weight="900" fill="#fff" text-anchor="middle">
+    给鸿蒙开发者的 AI 知识包
+  </text>
+  <text x="600" y="120" font-size="22" fill="#8b949e" text-anchor="middle">
+    四个数字看懂这个项目
+  </text>
+
+  <!-- Card 1: 1 -->
+  <rect x="60" y="170" width="250" height="280" rx="20" fill="url(#card1)"/>
+  <text x="185" y="310" font-size="160" font-weight="900" fill="#fff" text-anchor="middle">1</text>
+  <text x="185" y="370" font-size="22" font-weight="600" fill="#fff" text-anchor="middle">份源文件</text>
+  <text x="185" y="405" font-size="16" fill="#ddd6fe" text-anchor="middle">只维护一份 Markdown</text>
+  <text x="185" y="427" font-size="16" fill="#ddd6fe" text-anchor="middle">自动产出全部配置</text>
+
+  <!-- Card 2: 11+ -->
+  <rect x="340" y="170" width="250" height="280" rx="20" fill="url(#card2)"/>
+  <text x="465" y="310" font-size="130" font-weight="900" fill="#fff" text-anchor="middle">11+</text>
+  <text x="465" y="370" font-size="22" font-weight="600" fill="#fff" text-anchor="middle">款 AI 工具</text>
+  <text x="465" y="405" font-size="16" fill="#cffafe" text-anchor="middle">Claude / Cursor / Copilot</text>
+  <text x="465" y="427" font-size="16" fill="#cffafe" text-anchor="middle">Codex / Gemini / 更多…</text>
+
+  <!-- Card 3: 10 -->
+  <rect x="620" y="170" width="250" height="280" rx="20" fill="url(#card3)"/>
+  <text x="745" y="310" font-size="160" font-weight="900" fill="#fff" text-anchor="middle">10</text>
+  <text x="745" y="370" font-size="22" font-weight="600" fill="#fff" text-anchor="middle">大鸿蒙坑</text>
+  <text x="745" y="405" font-size="16" fill="#fef3c7" text-anchor="middle">FA vs Stage、@Observed</text>
+  <text x="745" y="427" font-size="16" fill="#fef3c7" text-anchor="middle">$r()、build() 必须同步…</text>
+
+  <!-- Card 4: 0 -->
+  <rect x="900" y="170" width="250" height="280" rx="20" fill="url(#card4)"/>
+  <text x="1025" y="310" font-size="160" font-weight="900" fill="#fff" text-anchor="middle">0</text>
+  <text x="1025" y="370" font-size="22" font-weight="600" fill="#fff" text-anchor="middle">额外依赖</text>
+  <text x="1025" y="405" font-size="16" fill="#d1fae5" text-anchor="middle">git + curl 就够</text>
+  <text x="1025" y="427" font-size="16" fill="#d1fae5" text-anchor="middle">MIT 协议,免费商用</text>
+
+  <!-- CTA -->
+  <rect x="300" y="510" width="600" height="90" rx="45" fill="#fff"/>
+  <text x="600" y="555" font-size="22" font-weight="700" fill="#0a0a0f" text-anchor="middle">⭐ Star on GitHub</text>
+  <text x="600" y="585" font-size="18" font-weight="500" fill="#4b5563" text-anchor="middle">github.com/DengShiyingA/harmonyos-ai-skills</text>
+
+  <!-- Footer tag -->
+  <text x="600" y="645" font-size="16" fill="#6b7280" text-anchor="middle">
+    #HarmonyOS  #鸿蒙  #ArkTS  #ArkUI  #AI编程
+  </text>
+</svg>
