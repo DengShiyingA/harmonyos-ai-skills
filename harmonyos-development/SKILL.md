@@ -308,25 +308,27 @@ Distribute via AppGallery Connect (华为应用市场).
 
 ## Sample catalog (developer.huawei.com/consumer/cn/samples)
 
-The official samples repo is organized by category. Typical categories include:
+The official samples repo is organized by the following **10 official categories** (as shown on the HarmonyOS developer samples page):
 
-- **Getting Started / 起步** — First app, component basics, layout examples
-- **ArkUI / 界面开发** — List, Grid, Swiper, Navigation, custom components, animations, WaterFlow, Tabs
-- **Ability 框架** — UIAbility lifecycle, routing, startAbilityForResult, ExtensionAbility samples
-- **Data Management / 数据管理** — Preferences, RDB, DataShare, distributed data object
-- **File Management / 文件管理** — Sandbox IO, picker, media library access
-- **Network & Connectivity / 网络** — HTTP, WebSocket, Bluetooth, Wi-Fi P2P, NFC
-- **Media / 多媒体** — Audio playback/recording, camera, image, video
-- **Graphics / 图形图像** — ArkGraphics 2D, XComponent + native OpenGL/Vulkan
-- **AI / HiAI** — Image classification, OCR, ASR, TTS, speech recognition
-- **Security / 安全** — HUKS key management, crypto, biometric auth
-- **Distributed / 分布式** — Cross-device continuation, distributed scheduler, distributed KV
-- **Atomic Services / 元服务** — Service card templates, form extension samples
-- **Wearable / 穿戴** — HarmonyOS watch / band apps
-- **Vehicle / 车机** — HarmonyOS cockpit samples
-- **System / 系统** — Window management, notifications, input method, wallpaper
+| 类别 | Category | What it covers |
+|---|---|---|
+| **HarmonyOS特征** | HarmonyOS Features | Platform-differentiating capabilities: 一多 (one-develop multi-deploy) responsive layout, 分布式流转 cross-device continuation, 原子化服务 / 服务卡片 atomic services & service cards, 超级终端 super device, 方舟编译器 Ark compiler features, 鸿蒙智联 HarmonyOS Connect |
+| **技术质量** | Technical Quality | Performance optimization (startup time, frame rate, memory), stability (crash/ANR), power consumption, security hardening, code quality, HiAppEvent / HiLog diagnostics, DFX capabilities |
+| **应用框架开发** | Application Framework | UIAbility / ExtensionAbility lifecycle, Ability routing & want, AppStartup, state management (@State/@Link/@Provide/@Observed), ArkUI components & layouts, Navigation / NavPathStack, Router, window management, internationalization, resource management, notifications, background tasks |
+| **系统开发** | System Development | Power/battery APIs, telephony (call/SMS), account system, device management, settings, accessibility, input method, wallpaper, system apps, low-level OS integration |
+| **媒体开发** | Media Development | AVPlayer / AVRecorder audio & video playback/recording, camera (CameraKit), image codec (ImageKit), media library, AVSession, audio focus, DRM, HDR |
+| **图形开发** | Graphics Development | ArkGraphics 2D, XComponent + native OpenGL ES / Vulkan, 3D rendering, Canvas, animations & transitions, effects, WebGL, SVG, drawing APIs |
+| **应用服务开发** | Application Service | Location (LocationKit / geoLocationManager), maps, push notifications, payments, account sign-in (Huawei ID), sharing, scanning, health/fitness, wallet, in-app purchase |
+| **AI功能开发** | AI Function Development | HiAI Foundation Kit, CoreVisionKit (image classification, OCR, face detection), SpeechKit (ASR/TTS), natural language, MindSpore Lite on-device inference, AI image enhancement, generative models |
+| **应用专项测试** | Application Testing | Unit testing (ohUnit / Hypium), UI automation testing, performance testing, compatibility testing, monkey / stress testing, smartperf profiling, DevEco Testing |
+| **开发工具** | Development Tools | DevEco Studio plugins & workflows, hvigor build scripts, ohpm package management, hdc device connector, Previewer, Profiler, Code Linter, debugging & logging tools |
 
-When helping the user find a sample, recommend they search the catalog by Kit name or by the API they need (e.g. "relationalStore", "FormExtensionAbility").
+> Browse the live catalog at https://developer.huawei.com/consumer/cn/samples/ — filter by category or search by Kit name / API (e.g. "relationalStore", "FormExtensionAbility", "AVPlayer").
+
+**When helping the user pick a sample:**
+1. Identify which of the 10 categories the feature belongs to
+2. Narrow by the specific Kit (AbilityKit, MediaKit, HiAIVisionKit, LocationKit, etc.)
+3. Match by API name or scenario (e.g. "service card" → 应用框架开发 + FormExtensionAbility)
 
 ## Common gotchas
 
