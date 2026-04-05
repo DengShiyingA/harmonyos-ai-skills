@@ -27,7 +27,7 @@ mkdir -p \
   "$DIST/continue" \
   "$DIST/windsurf" \
   "$DIST/cline" \
-  "$DIST/codex" \
+  "$DIST/agents-md" \
   "$DIST/gemini-cli" \
   "$DIST/system-prompt"
 
@@ -69,8 +69,8 @@ printf '%s\n' "$BODY" > "$DIST/windsurf/.windsurfrules"
 # 8. Cline / Roo Code custom instructions
 printf '%s\n' "$BODY" > "$DIST/cline/custom-instructions.md"
 
-# 9. OpenAI Codex CLI (reads AGENTS.md at repo root; also used by other AGENTS.md-aware tools)
-printf '%s\n' "$BODY" > "$DIST/codex/AGENTS.md"
+# 9. AGENTS.md standard — used by OpenAI Codex CLI, sst/opencode, Amp, Aider, Cursor (read), etc.
+printf '%s\n' "$BODY" > "$DIST/agents-md/AGENTS.md"
 
 # 10. Google Gemini CLI (reads GEMINI.md at repo root or ~/.gemini/GEMINI.md globally)
 printf '%s\n' "$BODY" > "$DIST/gemini-cli/GEMINI.md"

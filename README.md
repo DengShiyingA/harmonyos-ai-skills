@@ -19,7 +19,7 @@ skills/
    ├─ continue/                      # Continue.dev rules
    ├─ windsurf/                      # Windsurf rules
    ├─ cline/                         # Cline / Roo Code instructions
-   ├─ codex/                         # OpenAI Codex CLI AGENTS.md
+   ├─ agents-md/                     # AGENTS.md standard (Codex, opencode, Amp, Aider…)
    ├─ gemini-cli/                    # Google Gemini CLI GEMINI.md
    ├─ plain/                         # Pure Markdown (ChatGPT/Gemini/DeepSeek/…)
    └─ system-prompt/                 # Universal system prompt
@@ -52,7 +52,7 @@ Regenerate `dist/` after editing the source:
 | **GitHub Copilot** | `.github/copilot-instructions.md` | `dist/copilot/copilot-instructions.md` |
 | **Continue.dev** | `.continue/rules/harmonyos.md` | `dist/continue/harmonyos.md` |
 | **Cline / Roo Code** | Custom Instructions field | `dist/cline/custom-instructions.md` |
-| **OpenAI Codex CLI** | `AGENTS.md` (repo root) or `~/.codex/AGENTS.md` | `dist/codex/AGENTS.md` |
+| **AGENTS.md standard** — Codex CLI, [opencode](https://github.com/sst/opencode), Amp, Aider, Jules | `AGENTS.md` (repo root) | `dist/agents-md/AGENTS.md` |
 | **Google Gemini CLI** | `GEMINI.md` (repo root) or `~/.gemini/GEMINI.md` | `dist/gemini-cli/GEMINI.md` |
 
 ### ✅ Generic (paste as system prompt / custom instructions)
@@ -103,18 +103,23 @@ curl -o .windsurfrules \
   https://raw.githubusercontent.com/DengShiyingA/skills/claude/liquid-glass-skills-guide-0xUpZ/dist/windsurf/.windsurfrules
 ```
 
-### OpenAI Codex CLI
+### AGENTS.md (Codex CLI, opencode, Amp, Aider, Jules, …)
+
+A single file at the repo root serves every tool that follows the emerging
+[AGENTS.md standard](https://agents.md):
 
 ```bash
-# Project-level:
 curl -o AGENTS.md \
-  https://raw.githubusercontent.com/DengShiyingA/skills/claude/liquid-glass-skills-guide-0xUpZ/dist/codex/AGENTS.md
-
-# Global (user-level):
-mkdir -p ~/.codex
-curl -o ~/.codex/AGENTS.md \
-  https://raw.githubusercontent.com/DengShiyingA/skills/claude/liquid-glass-skills-guide-0xUpZ/dist/codex/AGENTS.md
+  https://raw.githubusercontent.com/DengShiyingA/skills/claude/liquid-glass-skills-guide-0xUpZ/dist/agents-md/AGENTS.md
 ```
+
+For global (user-level) scope, each tool reads from its own path:
+
+| Tool | Global path |
+|---|---|
+| OpenAI Codex CLI | `~/.codex/AGENTS.md` |
+| sst/opencode | `~/.config/opencode/AGENTS.md` |
+| Amp | `~/.config/amp/AGENTS.md` |
 
 ### Google Gemini CLI
 
