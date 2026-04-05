@@ -1,8 +1,36 @@
-# Skills — HarmonyOS Development Knowledge Pack
+<div align="center">
+
+# 🧠 HarmonyOS AI Skills
+
+### 鸿蒙开发知识包 · 喂饱 11+ AI 编程工具
+
+*"让 AI 像熟读华为文档的工程师一样,帮你写 ArkTS / ArkUI"*
+
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![HarmonyOS](https://img.shields.io/badge/HarmonyOS-NEXT-black)
+![ArkTS](https://img.shields.io/badge/ArkTS-Ready-blue)
+![AI Tools](https://img.shields.io/badge/AI_Tools-11+-purple)
+![AGENTS.md](https://img.shields.io/badge/AGENTS.md-Standard-green)
+
+<br/>
+
+**用 Cursor 写鸿蒙,AI 给你输出 React?**
+**让 Claude 改 `module.json5`,它写成 `package.json`?**
+**问 Copilot `@ObjectLink` 咋用,它说"这 API 不存在"?**
+
+问题不在 AI —— 在于没人给它喂过鸿蒙知识。
+
+**所以我喂了。一份 Markdown 源文件,自动产出 11+ AI 工具的配置。**
+
+<br/>
+
+[🚀 安装](#installation--detailed-instructions-per-tool) · [📖 知识内容](#whats-inside-the-knowledge) · [🛠️ 支持的工具](#supported-ai-tools) · [✅ 验证](#verifying-it-works)
+
+</div>
+
+---
 
 A portable knowledge pack that turns any AI coding assistant into a competent **HarmonyOS (鸿蒙) NEXT** engineer. Write the knowledge once — [`harmonyos-development/SKILL.md`](./harmonyos-development/SKILL.md) — and install it into every major AI coding tool via pre-built drop-in files.
-
-> **简介(中文)**:这是一个"把鸿蒙开发知识喂给 AI"的工具箱。只维护一份 Markdown 源文件,通过构建脚本自动产出 Claude Code / Cursor / Copilot / Codex / Gemini CLI / Windsurf / Continue / Cline / ChatGPT / DeepSeek / Qwen / Ollama 等 11 种工具的配置文件,让每个 AI 助手都能像一个熟读 HarmonyOS 文档的工程师一样帮你写 ArkTS / ArkUI 代码。安装方式见下方对应工具的章节。
 
 **What is a "skill"?** A skill is a chunk of domain knowledge (in Markdown) that an AI coding tool loads as background context when you chat with it. Once installed, the AI "knows" the domain — it will give you HarmonyOS-correct answers instead of generic TypeScript / React advice. Different tools call them different things (skills, rules, instructions, system prompt), but they all work the same way: **extra text prepended to the model's context**.
 
