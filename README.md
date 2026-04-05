@@ -6,15 +6,15 @@
 
 *"Make your AI write ArkTS / ArkUI like an engineer who's read every Huawei doc."*
 
-![License](https://img.shields.io/badge/License-MIT-yellow)
-![HarmonyOS](https://img.shields.io/badge/HarmonyOS-NEXT-black)
-![ArkTS](https://img.shields.io/badge/ArkTS-Ready-blue)
-![AI Tools](https://img.shields.io/badge/AI_Tools-11+-purple)
-![AGENTS.md](https://img.shields.io/badge/AGENTS.md-Standard-green)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](./LICENSE)
+[![HarmonyOS](https://img.shields.io/badge/HarmonyOS-NEXT-black)](https://developer.huawei.com/consumer/cn/)
+[![ArkTS](https://img.shields.io/badge/ArkTS-Ready-blue)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/arkts-get-started-V5)
+[![AI Tools](https://img.shields.io/badge/AI_Tools-11+-purple)](#supported-ai-tools)
+[![AGENTS.md](https://img.shields.io/badge/AGENTS.md-Standard-green)](https://agents.md)
 
-![Stars](https://img.shields.io/github/stars/DengShiyingA/harmonyos-ai-skills?style=social)
-![Last Commit](https://img.shields.io/github/last-commit/DengShiyingA/harmonyos-ai-skills)
-![Issues](https://img.shields.io/github/issues/DengShiyingA/harmonyos-ai-skills)
+[![Stars](https://img.shields.io/github/stars/DengShiyingA/harmonyos-ai-skills?style=social)](https://github.com/DengShiyingA/harmonyos-ai-skills/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/DengShiyingA/harmonyos-ai-skills)](https://github.com/DengShiyingA/harmonyos-ai-skills/commits)
+[![Issues](https://img.shields.io/github/issues/DengShiyingA/harmonyos-ai-skills)](https://github.com/DengShiyingA/harmonyos-ai-skills/issues)
 
 <br/>
 
