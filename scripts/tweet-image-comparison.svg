@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+  <!-- Background -->
+  <rect width="1200" height="675" fill="#0d1117"/>
+
+  <!-- Title -->
+  <text x="600" y="70" font-size="38" font-weight="700" fill="#fff" text-anchor="middle">
+    AI 写鸿蒙,装不装知识包的区别
+  </text>
+
+  <!-- Left card: Before -->
+  <rect x="40" y="110" width="550" height="500" rx="12" fill="#1c1f26" stroke="#f85149" stroke-width="2"/>
+  <rect x="40" y="110" width="550" height="50" rx="12" fill="#f85149"/>
+  <rect x="40" y="140" width="550" height="20" fill="#f85149"/>
+  <text x="60" y="142" font-size="20" font-weight="700" fill="#fff">❌ 不装</text>
+  <text x="540" y="142" font-size="14" fill="#fff" text-anchor="end">Cursor 瞎编</text>
+
+  <!-- Bad code -->
+  <text x="60" y="200" font-size="18" font-family="Menlo, monospace" fill="#8b949e">// 让 AI 写一个带状态的组件</text>
+  <text x="60" y="235" font-size="18" font-family="Menlo, monospace" fill="#f85149">import React, { useState } from 'react';</text>
+  <text x="60" y="265" font-size="18" font-family="Menlo, monospace" fill="#e6edf3">function MyPage() {</text>
+  <text x="80" y="295" font-size="18" font-family="Menlo, monospace" fill="#f85149">const [count, setCount] = useState(0);</text>
+  <text x="80" y="325" font-size="18" font-family="Menlo, monospace" fill="#e6edf3">return (</text>
+  <text x="100" y="355" font-size="18" font-family="Menlo, monospace" fill="#f85149">&lt;div onClick={() => setCount(count+1)}&gt;</text>
+  <text x="120" y="385" font-size="18" font-family="Menlo, monospace" fill="#e6edf3">{count}</text>
+  <text x="100" y="415" font-size="18" font-family="Menlo, monospace" fill="#f85149">&lt;/div&gt;</text>
+  <text x="80" y="445" font-size="18" font-family="Menlo, monospace" fill="#e6edf3">);</text>
+  <text x="60" y="475" font-size="18" font-family="Menlo, monospace" fill="#e6edf3">}</text>
+
+  <text x="60" y="540" font-size="16" fill="#f85149">↑ 这是 React,不是鸿蒙</text>
+  <text x="60" y="565" font-size="16" fill="#f85149">↑ ArkTS 里根本没有 useState</text>
+  <text x="60" y="590" font-size="16" fill="#f85149">↑ ArkUI 也没有 &lt;div&gt;</text>
+
+  <!-- Right card: After -->
+  <rect x="610" y="110" width="550" height="500" rx="12" fill="#1c1f26" stroke="#3fb950" stroke-width="2"/>
+  <rect x="610" y="110" width="550" height="50" rx="12" fill="#3fb950"/>
+  <rect x="610" y="140" width="550" height="20" fill="#3fb950"/>
+  <text x="630" y="142" font-size="20" font-weight="700" fill="#fff">✅ 装了</text>
+  <text x="1140" y="142" font-size="14" fill="#fff" text-anchor="end">知识包加持</text>
+
+  <!-- Good code -->
+  <text x="630" y="200" font-size="18" font-family="Menlo, monospace" fill="#8b949e">// 让 AI 写一个带状态的组件</text>
+  <text x="630" y="235" font-size="18" font-family="Menlo, monospace" fill="#3fb950">@Entry</text>
+  <text x="630" y="265" font-size="18" font-family="Menlo, monospace" fill="#3fb950">@Component</text>
+  <text x="630" y="295" font-size="18" font-family="Menlo, monospace" fill="#e6edf3">struct MyPage {</text>
+  <text x="650" y="325" font-size="18" font-family="Menlo, monospace" fill="#3fb950">@State count: number = 0;</text>
+  <text x="650" y="355" font-size="18" font-family="Menlo, monospace" fill="#e6edf3">build() {</text>
+  <text x="670" y="385" font-size="18" font-family="Menlo, monospace" fill="#3fb950">Text(`${this.count}`)</text>
+  <text x="690" y="415" font-size="18" font-family="Menlo, monospace" fill="#e6edf3">.onClick(() => {</text>
+  <text x="710" y="445" font-size="18" font-family="Menlo, monospace" fill="#e6edf3">this.count++;</text>
+  <text x="690" y="475" font-size="18" font-family="Menlo, monospace" fill="#e6edf3">})</text>
+  <text x="650" y="505" font-size="18" font-family="Menlo, monospace" fill="#e6edf3">}</text>
+  <text x="630" y="535" font-size="18" font-family="Menlo, monospace" fill="#e6edf3">}</text>
+
+  <text x="630" y="585" font-size="16" fill="#3fb950">↑ 地道的 ArkTS + ArkUI 写法</text>
+
+  <!-- Footer -->
+  <text x="600" y="655" font-size="18" font-weight="600" fill="#58a6ff" text-anchor="middle">
+    github.com/DengShiyingA/harmonyos-ai-skills
+  </text>
+</svg>

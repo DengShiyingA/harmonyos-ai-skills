@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+  <!-- Gradient background -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0e27"/>
+      <stop offset="50%" stop-color="#1a1f3a"/>
+      <stop offset="100%" stop-color="#0d1a2e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00d4ff"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+
+  <!-- Decorative grid -->
+  <g opacity="0.08" stroke="#00d4ff" stroke-width="1">
+    <line x1="0" y1="150" x2="1200" y2="150"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/>
+    <line x1="0" y1="450" x2="1200" y2="450"/>
+    <line x1="0" y1="600" x2="1200" y2="600"/>
+    <line x1="200" y1="0" x2="200" y2="675"/>
+    <line x1="400" y1="0" x2="400" y2="675"/>
+    <line x1="600" y1="0" x2="600" y2="675"/>
+    <line x1="800" y1="0" x2="800" y2="675"/>
+    <line x1="1000" y1="0" x2="1000" y2="675"/>
+  </g>
+
+  <!-- Small tag -->
+  <rect x="80" y="100" width="220" height="40" rx="20" fill="none" stroke="url(#accent)" stroke-width="2"/>
+  <text x="190" y="127" font-size="18" font-weight="600" fill="#00d4ff" text-anchor="middle">OPEN SOURCE · MIT</text>
+
+  <!-- Main title -->
+  <text x="80" y="230" font-size="72" font-weight="900" fill="#fff">鸿蒙开发</text>
+  <text x="80" y="315" font-size="72" font-weight="900" fill="url(#accent)">AI 知识包</text>
+
+  <!-- Subtitle -->
+  <text x="80" y="375" font-size="26" font-weight="400" fill="#a8b3cf">一份 Markdown · 喂饱 11+ AI 编程工具</text>
+  <text x="80" y="410" font-size="26" font-weight="400" fill="#a8b3cf">让 AI 写出地道的 ArkTS &amp; ArkUI</text>
+
+  <!-- Tools bar -->
+  <g font-size="17" font-weight="600" fill="#e6edf3">
+    <rect x="80" y="460" width="140" height="44" rx="8" fill="#1e2a47" stroke="#3d4a6b"/>
+    <text x="150" y="488" text-anchor="middle">Claude Code</text>
+
+    <rect x="230" y="460" width="90" height="44" rx="8" fill="#1e2a47" stroke="#3d4a6b"/>
+    <text x="275" y="488" text-anchor="middle">Cursor</text>
+
+    <rect x="330" y="460" width="110" height="44" rx="8" fill="#1e2a47" stroke="#3d4a6b"/>
+    <text x="385" y="488" text-anchor="middle">Copilot</text>
+
+    <rect x="450" y="460" width="90" height="44" rx="8" fill="#1e2a47" stroke="#3d4a6b"/>
+    <text x="495" y="488" text-anchor="middle">Codex</text>
+
+    <rect x="550" y="460" width="130" height="44" rx="8" fill="#1e2a47" stroke="#3d4a6b"/>
+    <text x="615" y="488" text-anchor="middle">Gemini CLI</text>
+
+    <rect x="690" y="460" width="110" height="44" rx="8" fill="#1e2a47" stroke="#3d4a6b"/>
+    <text x="745" y="488" text-anchor="middle">Windsurf</text>
+
+    <rect x="810" y="460" width="110" height="44" rx="8" fill="#1e2a47" stroke="#3d4a6b"/>
+    <text x="865" y="488" text-anchor="middle">Continue</text>
+
+    <rect x="930" y="460" width="80" height="44" rx="8" fill="#1e2a47" stroke="#3d4a6b"/>
+    <text x="970" y="488" text-anchor="middle">Cline</text>
+
+    <rect x="1020" y="460" width="100" height="44" rx="8" fill="#1e2a47" stroke="#3d4a6b"/>
+    <text x="1070" y="488" text-anchor="middle">+3 more</text>
+  </g>
+
+  <!-- Big number -->
+  <text x="80" y="600" font-size="140" font-weight="900" fill="url(#accent)" opacity="0.95">11+</text>
+  <text x="340" y="560" font-size="22" fill="#a8b3cf">种 AI 工具</text>
+  <text x="340" y="590" font-size="22" fill="#a8b3cf">一键安装</text>
+  <text x="340" y="620" font-size="22" fill="#a8b3cf">持续更新</text>
+
+  <!-- GitHub URL -->
+  <text x="1120" y="630" font-size="20" font-weight="600" fill="#00d4ff" text-anchor="end">
+    github.com/DengShiyingA/harmonyos-ai-skills
+  </text>
+</svg>
