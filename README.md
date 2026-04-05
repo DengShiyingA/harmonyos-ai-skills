@@ -1,8 +1,81 @@
 # Skills
 
-Multi-tool knowledge pack for **HarmonyOS (鸿蒙) NEXT** native development. Source of truth is [`harmonyos-development/SKILL.md`](./harmonyos-development/SKILL.md) (Claude Code format); a build script produces ready-to-drop-in files for every major AI coding tool.
+**HarmonyOS (鸿蒙) NEXT development knowledge, portable across every major AI coding tool.**
 
-Covers HarmonyOS NEXT with **ArkTS**, **ArkUI**, Stage model abilities, state-management decorators, all major Kits (Ability / Network / Media / Location / ArkData / HiAI …), HAP/HSP/HAR packaging, atomic services, distributed features, and the official samples catalog taxonomy.
+One source file — [`harmonyos-development/SKILL.md`](./harmonyos-development/SKILL.md) — is built into drop-in rules/instructions for Claude Code, Cursor, Copilot, Codex, Gemini CLI, Windsurf, Continue, Cline, and any generic chat AI.
+
+**Scope:** ArkTS · ArkUI · Stage model (UIAbility / ExtensionAbility) · state decorators (@State / @Link / @Observed / @ObjectLink …) · HarmonyOS Kits (Ability / Network / Media / Location / ArkData / HiAI …) · HAP/HSP/HAR packaging · atomic services (元服务) · distributed features · 10-category samples catalog.
+
+---
+
+## Supported tools
+
+| Tool | Install location | File |
+|---|---|---|
+| **Claude Code / Agent SDK** | `~/.claude/skills/harmonyos-development/` | `harmonyos-development/SKILL.md` |
+| **Cursor** (modern) | `.cursor/rules/harmonyos.mdc` | `dist/cursor/harmonyos.mdc` |
+| **Cursor** (legacy) | `.cursorrules` | `dist/cursor/.cursorrules` |
+| **GitHub Copilot** | `.github/copilot-instructions.md` | `dist/copilot/copilot-instructions.md` |
+| **Windsurf / Codeium** | `.windsurfrules` | `dist/windsurf/.windsurfrules` |
+| **Continue.dev** | `.continue/rules/harmonyos.md` | `dist/continue/harmonyos.md` |
+| **Cline / Roo Code** | Custom Instructions field | `dist/cline/custom-instructions.md` |
+| **AGENTS.md**: Codex CLI · [opencode](https://github.com/sst/opencode) · Amp · Aider · Jules | `AGENTS.md` (repo root) | `dist/agents-md/AGENTS.md` |
+| **Gemini CLI** | `GEMINI.md` or `~/.gemini/GEMINI.md` | `dist/gemini-cli/GEMINI.md` |
+| **ChatGPT · Gemini · DeepSeek · Qwen · Kimi · 文心一言** | paste into Custom Instructions / System Prompt | `dist/plain/harmonyos-knowledge.md` |
+| **Ollama · any LLM API** | `--system` flag / system message | `dist/system-prompt/system.txt` |
+
+All `dist/` files are generated from the single source. Edit `harmonyos-development/SKILL.md`, then run `./scripts/build-dist.sh` to regenerate.
+
+---
+
+## Quick install
+
+Replace `<FILE>` in the URL below with one of the paths from the table above (e.g. `dist/cursor/harmonyos.mdc`):
+
+```bash
+RAW=https://raw.githubusercontent.com/DengShiyingA/skills/claude/liquid-glass-skills-guide-0xUpZ
+curl -o <local-path> "$RAW/<FILE>"
+```
+
+### Common one-liners
+
+```bash
+# Claude Code
+git clone https://github.com/DengShiyingA/skills.git && \
+  mkdir -p ~/.claude/skills && \
+  cp -r skills/harmonyos-development ~/.claude/skills/
+
+# Cursor
+mkdir -p .cursor/rules && curl -o .cursor/rules/harmonyos.mdc "$RAW/dist/cursor/harmonyos.mdc"
+
+# GitHub Copilot
+mkdir -p .github && curl -o .github/copilot-instructions.md "$RAW/dist/copilot/copilot-instructions.md"
+
+# Windsurf
+curl -o .windsurfrules "$RAW/dist/windsurf/.windsurfrules"
+
+# AGENTS.md (Codex / opencode / Amp / Aider / Jules)
+curl -o AGENTS.md "$RAW/dist/agents-md/AGENTS.md"
+
+# Gemini CLI
+curl -o GEMINI.md "$RAW/dist/gemini-cli/GEMINI.md"
+
+# Ollama
+ollama run qwen2.5-coder --system "$(curl -s $RAW/dist/system-prompt/system.txt)"
+```
+
+---
+
+## How activation works
+
+| Tool category | Trigger |
+|---|---|
+| **Claude Code** | `description` frontmatter matched against user turn — auto-loaded, zero manual invocation |
+| **Project rule files** (Cursor, Copilot, Windsurf, Continue, AGENTS.md, GEMINI.md) | Auto-attached to every chat and edit inside the project |
+| **Generic chat** (ChatGPT, Gemini, DeepSeek, Qwen, …) | One-time paste per conversation, or permanent via Custom Instructions |
+
+**Sanity check:** ask the tool *"Explain `@ObjectLink` in ArkUI and when to use it instead of `@State`."*
+If the answer mentions the `@Observed` class requirement, the array-item re-render rule, and the reassignment trick — the knowledge is active.
 
 ---
 
@@ -10,201 +83,40 @@ Covers HarmonyOS NEXT with **ArkTS**, **ArkUI**, Stage model abilities, state-ma
 
 ```
 skills/
-├─ harmonyos-development/SKILL.md    # Source of truth (Claude Code format)
-├─ scripts/build-dist.sh             # Regenerates dist/ from the source
-└─ dist/                             # Generated — drop-in files per tool
-   ├─ claude-code/                   # Native Claude Code skill
-   ├─ cursor/                        # .cursorrules + .mdc rule
-   ├─ copilot/                       # GitHub Copilot instructions
-   ├─ continue/                      # Continue.dev rules
-   ├─ windsurf/                      # Windsurf rules
-   ├─ cline/                         # Cline / Roo Code instructions
-   ├─ agents-md/                     # AGENTS.md standard (Codex, opencode, Amp, Aider…)
-   ├─ gemini-cli/                    # Google Gemini CLI GEMINI.md
-   ├─ plain/                         # Pure Markdown (ChatGPT/Gemini/DeepSeek/…)
-   └─ system-prompt/                 # Universal system prompt
+├─ harmonyos-development/SKILL.md    ← source of truth (edit here)
+├─ scripts/build-dist.sh             ← regenerates every dist/ file
+├─ dist/                             ← generated drop-ins
+│  ├─ claude-code/      cursor/       copilot/      continue/
+│  ├─ windsurf/         cline/        agents-md/    gemini-cli/
+│  ├─ plain/            system-prompt/
+└─ README.md
 ```
-
-Regenerate `dist/` after editing the source:
-
-```bash
-./scripts/build-dist.sh
-```
-
----
-
-## Supported AI tools
-
-### ✅ Native format (frontmatter-aware, auto-triggered)
-
-| Tool | Install path | Source file |
-|---|---|---|
-| **Claude Code CLI** | `~/.claude/skills/harmonyos-development/` | `harmonyos-development/` |
-| **Claude Agent SDK** | SDK skills config | `harmonyos-development/` |
-
-### ✅ Rules-file format (auto-attached per project)
-
-| Tool | Install path | Source file |
-|---|---|---|
-| **Cursor** (modern) | `.cursor/rules/harmonyos.mdc` | `dist/cursor/harmonyos.mdc` |
-| **Cursor** (legacy) | `.cursorrules` (repo root) | `dist/cursor/.cursorrules` |
-| **Windsurf / Codeium** | `.windsurfrules` (repo root) | `dist/windsurf/.windsurfrules` |
-| **GitHub Copilot** | `.github/copilot-instructions.md` | `dist/copilot/copilot-instructions.md` |
-| **Continue.dev** | `.continue/rules/harmonyos.md` | `dist/continue/harmonyos.md` |
-| **Cline / Roo Code** | Custom Instructions field | `dist/cline/custom-instructions.md` |
-| **AGENTS.md standard** — Codex CLI, [opencode](https://github.com/sst/opencode), Amp, Aider, Jules | `AGENTS.md` (repo root) | `dist/agents-md/AGENTS.md` |
-| **Google Gemini CLI** | `GEMINI.md` (repo root) or `~/.gemini/GEMINI.md` | `dist/gemini-cli/GEMINI.md` |
-
-### ✅ Generic (paste as system prompt / custom instructions)
-
-| Tool | How | Source file |
-|---|---|---|
-| **ChatGPT / GPT-4o** | Custom Instructions → paste | `dist/plain/harmonyos-knowledge.md` |
-| **Google Gemini / AI Studio** | System Instructions → paste | `dist/plain/harmonyos-knowledge.md` |
-| **DeepSeek / Qwen / 文心一言 / Kimi** | 系统提示 / 角色设定 | `dist/plain/harmonyos-knowledge.md` |
-| **Ollama local models** | `ollama run model --system "$(cat dist/system-prompt/system.txt)"` | `dist/system-prompt/system.txt` |
-| **Any LLM API** | Include as system message | `dist/system-prompt/system.txt` |
-
----
-
-## Installation quick-start
-
-### Claude Code (recommended)
-
-```bash
-git clone https://github.com/DengShiyingA/skills.git
-mkdir -p ~/.claude/skills
-cp -r skills/harmonyos-development ~/.claude/skills/
-# Restart Claude Code
-```
-
-### Cursor
-
-```bash
-# Modern .mdc rule (per-project):
-mkdir -p .cursor/rules
-curl -o .cursor/rules/harmonyos.mdc \
-  https://raw.githubusercontent.com/DengShiyingA/skills/claude/liquid-glass-skills-guide-0xUpZ/dist/cursor/harmonyos.mdc
-```
-
-### GitHub Copilot
-
-```bash
-# Project-level, auto-applied:
-mkdir -p .github
-curl -o .github/copilot-instructions.md \
-  https://raw.githubusercontent.com/DengShiyingA/skills/claude/liquid-glass-skills-guide-0xUpZ/dist/copilot/copilot-instructions.md
-```
-
-### Windsurf
-
-```bash
-curl -o .windsurfrules \
-  https://raw.githubusercontent.com/DengShiyingA/skills/claude/liquid-glass-skills-guide-0xUpZ/dist/windsurf/.windsurfrules
-```
-
-### AGENTS.md (Codex CLI, opencode, Amp, Aider, Jules, …)
-
-A single file at the repo root serves every tool that follows the emerging
-[AGENTS.md standard](https://agents.md):
-
-```bash
-curl -o AGENTS.md \
-  https://raw.githubusercontent.com/DengShiyingA/skills/claude/liquid-glass-skills-guide-0xUpZ/dist/agents-md/AGENTS.md
-```
-
-For global (user-level) scope, each tool reads from its own path:
-
-| Tool | Global path |
-|---|---|
-| OpenAI Codex CLI | `~/.codex/AGENTS.md` |
-| sst/opencode | `~/.config/opencode/AGENTS.md` |
-| Amp | `~/.config/amp/AGENTS.md` |
-
-### Google Gemini CLI
-
-```bash
-# Project-level:
-curl -o GEMINI.md \
-  https://raw.githubusercontent.com/DengShiyingA/skills/claude/liquid-glass-skills-guide-0xUpZ/dist/gemini-cli/GEMINI.md
-
-# Global (user-level):
-mkdir -p ~/.gemini
-curl -o ~/.gemini/GEMINI.md \
-  https://raw.githubusercontent.com/DengShiyingA/skills/claude/liquid-glass-skills-guide-0xUpZ/dist/gemini-cli/GEMINI.md
-```
-
-### ChatGPT / Gemini / DeepSeek / Qwen (manual)
-
-1. Open `dist/plain/harmonyos-knowledge.md` and copy all contents
-2. Paste into the tool's **Custom Instructions** / **System Prompt** / **角色设定** field
-3. Start chatting about HarmonyOS — the model now has the knowledge
-
-### Ollama / local models
-
-```bash
-ollama run qwen2.5-coder --system "$(cat dist/system-prompt/system.txt)"
-```
-
----
-
-## How activation works
-
-### Claude Code
-Reads `SKILL.md` frontmatter → auto-loads when user question matches `description`. **Zero manual invocation.**
-
-### Cursor / Windsurf / Copilot / Continue
-Project-scoped rules files. Any file edit or chat inside the project automatically gets the knowledge injected.
-
-### ChatGPT / Gemini / generic
-One-time paste per conversation (or permanent via Custom Instructions).
-
----
-
-## Verifying it works
-
-Ask the AI in any tool:
-
-> "Explain `@ObjectLink` in ArkUI and when to use it instead of `@State`."
-
-If the answer mentions **`@Observed` class requirement**, **array-of-items re-render behavior**, or **reassignment trick** — the knowledge is active.
 
 ---
 
 ## Updating
 
 ```bash
-# Pull latest source
 git pull
-
-# Regenerate all dist/ formats
-./scripts/build-dist.sh
-
-# Re-copy to your tool's install path
-cp -r harmonyos-development ~/.claude/skills/    # Claude Code
-cp dist/cursor/harmonyos.mdc <project>/.cursor/rules/  # Cursor
-# etc.
+./scripts/build-dist.sh           # regenerate dist/
+# re-copy whichever file your tool uses
 ```
 
 ---
 
-## Writing your own skill
+## Authoring your own skill
 
-Source format is Claude Code SKILL.md (YAML frontmatter + Markdown body):
+Source is the Claude Code `SKILL.md` format — YAML frontmatter + Markdown body:
 
 ```markdown
 ---
 name: my-skill
-description: Trigger keywords that help the AI recognize when to apply this skill.
+description: Trigger keywords so the AI knows when to apply this skill.
 ---
 
 # My Skill
-
-## When to apply this skill
-...
-
+## When to apply
 ## Reference
-...
 ```
 
-Keep skills **focused** (one domain), **dense** (no filler), and **trigger-rich** (list likely user phrasings in `description`). Then run `./scripts/build-dist.sh` to generate all tool formats.
+Guidelines: **focused** (one domain), **dense** (no filler), **trigger-rich** (list likely user phrasings in `description`). Run `./scripts/build-dist.sh` to produce all tool formats.
