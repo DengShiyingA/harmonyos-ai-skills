@@ -2,9 +2,9 @@
 
 # 🧠 HarmonyOS AI Skills
 
-### 鸿蒙开发知识包 · 喂饱 11+ AI 编程工具
+### A HarmonyOS NEXT (鸿蒙) knowledge pack for 11+ AI coding assistants
 
-*"让 AI 像熟读华为文档的工程师一样,帮你写 ArkTS / ArkUI"*
+*"Make your AI write ArkTS / ArkUI like an engineer who's read every Huawei doc."*
 
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 ![HarmonyOS](https://img.shields.io/badge/HarmonyOS-NEXT-black)
@@ -14,17 +14,17 @@
 
 <br/>
 
-**用 Cursor 写鸿蒙,AI 给你输出 React?**
-**让 Claude 改 `module.json5`,它写成 `package.json`?**
-**问 Copilot `@ObjectLink` 咋用,它说"这 API 不存在"?**
+**Ask Cursor to write HarmonyOS — it hands you React.**
+**Ask Claude to edit `module.json5` — it writes `package.json`.**
+**Ask Copilot about `@ObjectLink` — it says "that API doesn't exist."**
 
-问题不在 AI —— 在于没人给它喂过鸿蒙知识。
+The problem isn't the AI — it's that no one's ever fed it HarmonyOS knowledge.
 
-**所以我喂了。一份 Markdown 源文件,自动产出 11+ AI 工具的配置。**
+**So I did. One Markdown source → drop-in configs for 11+ AI tools.**
 
 <br/>
 
-[🚀 安装](#installation--detailed-instructions-per-tool) · [📖 知识内容](#whats-inside-the-knowledge) · [🛠️ 支持的工具](#supported-ai-tools) · [✅ 验证](#verifying-it-works)
+[🚀 Install](#installation--detailed-instructions-per-tool) · [📖 What's Inside](#whats-inside-the-knowledge) · [🛠️ Supported Tools](#supported-ai-tools) · [✅ Verify It Works](#verifying-it-works)
 
 </div>
 
