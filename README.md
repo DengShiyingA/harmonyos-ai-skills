@@ -66,7 +66,7 @@ The two files differ only slightly: `plain/` is the raw Markdown; `system-prompt
 All `curl` commands below use a shell variable `$RAW` — run this once in your terminal first (it stays set for the rest of your session):
 
 ```bash
-export RAW=https://raw.githubusercontent.com/DengShiyingA/skills/claude/liquid-glass-skills-guide-0xUpZ
+export RAW=https://raw.githubusercontent.com/DengShiyingA/harmonyos-ai-skills/claude/liquid-glass-skills-guide-0xUpZ
 ```
 
 ### Claude Code CLI
@@ -75,19 +75,19 @@ Pick **one** of the three options below:
 
 ```bash
 # Option A — quick copy (you get a static snapshot)
-git clone https://github.com/DengShiyingA/skills.git ~/src/ds-skills
+git clone https://github.com/DengShiyingA/harmonyos-ai-skills.git ~/src/harmonyos-ai-skills
 mkdir -p ~/.claude/skills
-cp -r ~/src/ds-skills/harmonyos-development ~/.claude/skills/
+cp -r ~/src/harmonyos-ai-skills/harmonyos-development ~/.claude/skills/
 
 # Option B — symlink (recommended: auto-updates after `git pull`)
-git clone https://github.com/DengShiyingA/skills.git ~/src/ds-skills
+git clone https://github.com/DengShiyingA/harmonyos-ai-skills.git ~/src/harmonyos-ai-skills
 mkdir -p ~/.claude/skills
-ln -s ~/src/ds-skills/harmonyos-development ~/.claude/skills/harmonyos-development
+ln -s ~/src/harmonyos-ai-skills/harmonyos-development ~/.claude/skills/harmonyos-development
 
 # Option C — project-local only (commit it so your whole team gets the skill)
 cd <your-harmonyos-project>
 mkdir -p .claude/skills
-cp -r ~/src/ds-skills/harmonyos-development .claude/skills/
+cp -r ~/src/harmonyos-ai-skills/harmonyos-development .claude/skills/
 ```
 
 After installing, **restart Claude Code**. To verify, ask it: *"What skills are available?"* — it should list `harmonyos-development`.
@@ -264,7 +264,7 @@ Other good probes:
 ## Repository layout
 
 ```
-skills/
+harmonyos-ai-skills/
 ├─ harmonyos-development/
 │  └─ SKILL.md                          ← Source of truth. Edit only here.
 ├─ scripts/
@@ -352,7 +352,7 @@ After editing the source file, run `./scripts/build-dist.sh` to regenerate every
 Unlikely — `SKILL.md` is ~370 lines (~12 KB). Every listed tool accepts it. If you still hit a limit, trim sections from `dist/plain/harmonyos-knowledge.md` manually.
 
 **`curl` fails with 404.**
-The branch in the URL may have moved. Check `https://github.com/DengShiyingA/skills/branches` and update `$RAW` accordingly.
+The branch in the URL may have moved. Check `https://github.com/DengShiyingA/harmonyos-ai-skills/branches` and update `$RAW` accordingly.
 
 **How do I update after the upstream repo changes?**
 See the *Updating to the latest version* section above.
