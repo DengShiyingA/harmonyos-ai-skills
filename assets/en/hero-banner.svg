@@ -28,7 +28,7 @@
 
   <!-- Main title -->
   <text x="80" y="205" font-size="68" font-weight="800" fill="#2d2520" letter-spacing="-1">HarmonyOS</text>
-  <text x="80" y="285" font-size="68" font-weight="800" fill="#D97757" letter-spacing="-1">AI Skills</text>
+  <text x="80" y="285" font-size="68" font-weight="800" fill="#D97757" letter-spacing="-1">AI Skill</text>
 
   <!-- Subtitle -->
   <text x="80" y="340" font-size="22" font-weight="400" fill="#6b5d50">Knowledge pack for 11+ AI coding assistants</text>

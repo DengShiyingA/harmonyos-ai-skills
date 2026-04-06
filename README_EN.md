@@ -2,7 +2,7 @@
 
 **English** | [简体中文](./README.md)
 
-<img src="./assets/en/hero-banner.svg" alt="HarmonyOS AI Skills" width="100%"/>
+<img src="./assets/en/hero-banner.svg" alt="HarmonyOS AI Skill" width="100%"/>
 
 # 🧠 HarmonyOS AI Skill
 
