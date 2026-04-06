@@ -171,6 +171,9 @@ Formatting: 2-space indent, max 120 chars/line, K&R braces, always use `{}` for 
 8. Minimize closures in hot paths — pass variables via function params instead
 9. Use Array methods (`forEach`, `map`, `filter`, `reduce`) — internally optimized
 10. Keep `build()` pure and declarative — no side effects, load data in `aboutToAppear()`
+11. Use `HashMap` instead of `Record` for key-value operations — faster lookup/insert
+12. Reduce multi-level indirect exports — prefer direct `export { foo } from './module'`
+13. Use lazy import (`import lazy { Foo } from './heavy'`) for modules not needed at startup
 
 ## ArkUI — declarative UI
 
@@ -238,6 +241,26 @@ struct Index {
 **Flex vs Column/Row:** Flex requires re-layout for `flexShrink`/`flexGrow`. Always prefer `Column`/`Row` when you don't need flex behavior.
 
 **RelativeContainer:** Use `__container__` as anchor ID for the container itself. Each child needs `.id()`. Set `.alignRules({ top: { anchor: 'id', align: VerticalAlign.Bottom } })`.
+
+**Blank():** Fills remaining space in Row/Column — use for "label ... value" layouts: `Row() { Text('Name'); Blank(); Text('Value') }`.
+
+**displayPriority:** Lower-priority children auto-hide when container shrinks. `Row() { A().displayPriority(1); B().displayPriority(3); C().displayPriority(1) }` — A and C hide first.
+
+**layoutWeight:** Proportional sizing — `Row() { Column().layoutWeight(1); Column().layoutWeight(2) }` gives 1:2 ratio.
+
+**AttributeModifier** — reusable style object:
+```ts
+class PrimaryButtonModifier implements AttributeModifier<ButtonAttribute> {
+  applyNormalAttribute(instance: ButtonAttribute): void {
+    instance.width('100%').height(48).fontSize(16).fontColor(Color.White).backgroundColor('#007DFF');
+  }
+  applyPressedAttribute(instance: ButtonAttribute): void {
+    instance.backgroundColor('#0056B3');
+  }
+}
+// Usage:
+Button('Submit').attributeModifier(new PrimaryButtonModifier())
+```
 
 ### Performance-critical patterns
 
@@ -312,6 +335,182 @@ Text('Hello')
 Image($r('app.media.photo')).geometryTransition('picture')
 // Wrap state change in animateTo
 this.getUIContext()?.animateTo({ duration: 300 }, () => { this.isExpanded = !this.isExpanded })
+```
+
+### Tabs — bottom/top navigation
+
+```ts
+@Entry @Component
+struct MainPage {
+  @State currentIndex: number = 0;
+
+  @Builder tabBuilder(index: number, title: string, icon: Resource) {
+    Column() {
+      SymbolGlyph(icon).fontSize(24)
+        .fontColor([this.currentIndex === index ? '#007DFF' : '#99000000'])
+      Text(title).fontSize(10).margin({ top: 4 })
+        .fontColor(this.currentIndex === index ? '#007DFF' : '#99000000')
+    }.justifyContent(FlexAlign.Center).height('100%').width('100%')
+  }
+
+  build() {
+    Tabs({ barPosition: BarPosition.End }) {        // BarPosition.Start for top
+      TabContent() { HomePage() }
+        .tabBar(this.tabBuilder(0, 'Home', $r('sys.symbol.house')))
+      TabContent() { MinePage() }
+        .tabBar(this.tabBuilder(1, 'Me', $r('sys.symbol.person')))
+    }
+    .barHeight(56)
+    .onChange((index) => { this.currentIndex = index; })
+    .scrollable(false)                               // disable swipe between tabs
+  }
+}
+```
+
+Glass-blur tab bar: `.barOverlap(true).barBackgroundBlurStyle(BlurStyle.Thin)`.
+
+### Swiper — carousel / banner
+
+```ts
+Swiper() {
+  ForEach(this.banners, (item: BannerItem) => {
+    Image(item.url).width('100%').height(180).borderRadius(12)
+  })
+}
+.loop(true)
+.autoPlay(true)
+.interval(3000)
+.indicator(new DotIndicator()
+  .color('#33000000').selectedColor('#007DFF')
+  .itemWidth(8).selectedItemWidth(16))
+```
+
+### WaterFlow — Pinterest-style layout
+
+```ts
+WaterFlow({ scroller: this.scroller }) {
+  LazyForEach(this.dataSource, (item: CardItem) => {
+    FlowItem() {
+      Column() {
+        Image(item.image).width('100%').borderRadius(8)
+        Text(item.title).fontSize(14).padding(8)
+      }
+    }
+  }, (item: CardItem) => item.id)
+}
+.columnsTemplate('1fr 1fr')       // 2 columns
+.columnsGap(8)
+.rowsGap(8)
+.cachedCount(10)
+```
+
+### Grid — fixed grid layout
+
+```ts
+Grid() {
+  ForEach(this.items, (item: GridItemData) => {
+    GridItem() {
+      Column() {
+        Image(item.icon).width(40).height(40)
+        Text(item.name).fontSize(12).margin({ top: 4 })
+      }
+    }
+  })
+}
+.columnsTemplate('1fr 1fr 1fr 1fr')   // 4 columns
+.rowsGap(12)
+.columnsGap(12)
+.height(200)
+```
+
+### TextInput / TextArea
+
+```ts
+TextInput({ placeholder: 'Enter username' })
+  .type(InputType.Normal)                          // .Email, .Number, .Password, .PhoneNumber
+  .maxLength(20)
+  .onChange((value: string) => { this.username = value; })
+  .onSubmit((enterKey: EnterKeyType) => { /* handle submit */ })
+
+TextArea({ placeholder: 'Enter description', text: $$this.desc })
+  .maxLength(200)
+  .showCounter(true)                                // character count indicator
+```
+
+Two-way binding with `$$`: `TextInput({ text: $$this.value })` — no `onChange` needed.
+
+### Router — basic page navigation
+
+```ts
+import { router } from '@kit.ArkUI';
+
+// Push to new page (with params)
+router.pushUrl({
+  url: 'pages/Detail',
+  params: { id: '123', title: 'Hello' }
+});
+
+// Get params on target page
+const params = router.getParams() as Record<string, string>;
+
+// Go back
+router.back();
+
+// Replace current page (no back stack)
+router.replaceUrl({ url: 'pages/Login' });
+```
+
+> **Note**: For Navigation-based apps, prefer `NavPathStack.pushPath()` over Router.
+
+### AlertDialog / Toast
+
+```ts
+// Alert dialog
+AlertDialog.show({
+  title: 'Confirm',
+  message: 'Delete this item?',
+  primaryButton: { value: 'Cancel', action: () => {} },
+  secondaryButton: { value: 'Delete', fontColor: Color.Red,
+    action: () => { this.deleteItem(); }
+  },
+});
+
+// Toast
+this.getUIContext().getPromptAction().showToast({
+  message: 'Operation successful',
+  duration: 2000,
+});
+```
+
+### Common form components — quick reference
+
+| Component | Key Props | Example |
+|---|---|---|
+| `Checkbox` | `select`, `onChange((val: boolean) => {})` | `Checkbox({ name: 'agree' }).select(this.agreed)` |
+| `Toggle` | `type(ToggleType.Switch)`, `isOn`, `onChange` | `Toggle({ type: ToggleType.Switch, isOn: $$this.on })` |
+| `Radio` | `value`, `group`, `checked`, `onChange` | `Radio({ value: 'male', group: 'gender' }).checked(true)` |
+| `Select` | `options: SelectOption[]`, `selected`, `value`, `onSelect` | `Select([{value:'A'},{value:'B'}]).selected(0)` |
+| `Slider` | `value`, `min`, `max`, `step`, `onChange` | `Slider({ value: $$this.val, min: 0, max: 100 })` |
+| `DatePicker` | `start`, `end`, `selected`, `onChange` | `DatePicker({ selected: this.date }).onChange((v) => {})` |
+| `TimePicker` | `selected`, `useMilitaryTime`, `onChange` | `TimePicker({ selected: this.time })` |
+| `Search` | `value`, `placeholder`, `onSubmit`, `onChange` | `Search({ value: $$this.keyword, placeholder: 'Search' })` |
+| `Progress` | `value`, `total`, `type(ProgressType.Linear)` | `Progress({ value: 60, total: 100 })` |
+| `LoadingProgress` | — | `LoadingProgress().width(48).color('#007DFF')` |
+
+### EventHub — UIAbility ↔ page communication
+
+```ts
+// In UIAbility — emit event
+this.context.eventHub.emit('dataReady', { items: [...] });
+
+// In page — subscribe
+const context = getContext(this) as common.UIAbilityContext;
+context.eventHub.on('dataReady', (data: Record<string, ESObject>) => {
+  this.items = data.items;
+});
+
+// Unsubscribe
+context.eventHub.off('dataReady');
 ```
 
 ### HarmonyOS 6.0 visual effects (沉浸光感视效 / 液态玻璃)
@@ -725,6 +924,28 @@ async function fetchJson(url: string): Promise<string> {
 }
 ```
 
+### Network connectivity monitoring
+
+```ts
+import { connection } from '@kit.NetworkKit';
+
+// Check current network state
+const hasNet = connection.hasDefaultNetSync();
+
+// Monitor network changes
+const netCon = connection.createNetConnection();
+netCon.on('netAvailable', () => { /* network restored */ });
+netCon.on('netLost', () => { /* network lost */ });
+netCon.on('netCapabilitiesChange', (info: connection.NetCapabilityInfo) => {
+  const isWifi = info.netCap.bearerTypes.includes(connection.NetBearType.BEARER_WIFI);
+  const isCellular = info.netCap.bearerTypes.includes(connection.NetBearType.BEARER_CELLULAR);
+});
+netCon.register(() => {});  // activate subscriptions
+
+// Cleanup
+netCon.unregister(() => {});
+```
+
 ### Permissions
 
 Declare in `module.json5` → `requestPermissions`. For user-granted permissions, request at runtime via `abilityAccessCtrl.createAtManager().requestPermissionsFromUser(context, [...])`.
@@ -962,9 +1183,20 @@ const bundleInfo = await bundleManager.getBundleInfoForSelf(
 const status = await atManager.checkAccessToken(
   bundleInfo.appInfo.accessTokenId, 'ohos.permission.CAMERA');
 
-// Request (if user previously rejected, use requestPermissionOnSetting instead)
-atManager.requestPermissionsFromUser(context,
+// Step 1 — Request from user
+const result = await atManager.requestPermissionsFromUser(context,
   ['ohos.permission.CAMERA', 'ohos.permission.MICROPHONE']);
+if (result.authResults[0] === 0) {
+  // Granted
+} else if (result.dialogShownResults?.[0]) {
+  // User saw dialog but denied — show in-app guidance, don't re-pop
+} else {
+  // Step 2 — Fallback: open settings dialog (user previously denied permanently)
+  atManager.requestPermissionOnSetting(context,
+    ['ohos.permission.CAMERA']).then((statuses) => {
+    // statuses[0]: 0 = granted, -1 = denied
+  });
+}
 ```
 
 **Data encryption levels:** EL1 (device-level) → EL2 (user-level, default) → EL3 (accessible while locked) → EL4 (inaccessible when locked)
@@ -2892,4 +3124,587 @@ packer.release();
 ```ts
 pixelMap.release();
 imageSource.release();
+```
+
+## App Linking — deep links & app-to-app navigation
+
+### Configure deep link in module.json5
+
+```json5
+{
+  "module": {
+    "abilities": [{
+      "name": "EntryAbility",
+      "skills": [{
+        "entities": ["entity.system.home", "entity.system.browsable"],
+        "actions": ["ohos.want.action.home", "ohos.want.action.viewData"],
+        "uris": [{ "scheme": "https", "host": "example.com", "path": "/detail" }],
+        "domainVerify": true       // enable App Linking verification
+      }]
+    }]
+  }
+}
+```
+
+### Handle incoming link — cold start (onCreate)
+
+```ts
+import { url } from '@kit.ArkTS';
+
+export default class EntryAbility extends UIAbility {
+  private targetPage: string = '';
+  private linkParams: Record<string, string> = {};
+
+  onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+    this.parseUri(want);
+  }
+
+  private parseUri(want: Want): void {
+    if (want?.uri) {
+      const urlObj = url.URL.parseURL(want.uri);
+      this.linkParams = Object.fromEntries(urlObj.params.entries());
+      this.targetPage = urlObj.pathname;        // e.g. "/detail"
+    }
+  }
+
+  onWindowStageCreate(windowStage: window.WindowStage): void {
+    const page = this.targetPage === '/detail' ? 'pages/Detail' : 'pages/Index';
+    if (this.linkParams['id']) {
+      AppStorage.setOrCreate('linkId', this.linkParams['id']);
+    }
+    windowStage.loadContent(page);
+  }
+}
+```
+
+### Handle link — app already running (onNewWant)
+
+```ts
+onNewWant(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+  this.parseUri(want);
+  if (this.linkParams['id']) {
+    AppStorage.setOrCreate('linkId', this.linkParams['id']);
+    AppStorage.setOrCreate('newWantFlag', true);   // notify UI to navigate
+  }
+}
+```
+
+Page listens for `newWantFlag` via `@StorageLink` + `@Watch` and navigates accordingly.
+
+## Share Kit — cross-app content sharing
+
+```ts
+import { systemShare } from '@kit.ShareKit';
+import { uniformTypeDescriptor } from '@kit.ArkData';
+
+// Share a hyperlink
+const shareData = new systemShare.SharedData({
+  utd: uniformTypeDescriptor.UniformDataType.HYPERLINK,
+  content: 'https://example.com/article/123',
+  title: 'Article Title',
+  description: 'Article preview text',
+});
+const controller = new systemShare.ShareController(shareData);
+controller.show(this.context, {
+  previewMode: systemShare.SharePreviewMode.DEFAULT,
+  selectionMode: systemShare.SelectionMode.SINGLE,
+});
+```
+
+Supported UTD types: `HYPERLINK`, `PLAIN_TEXT`, `HTML`, `IMAGE` (pass `uri` from file), `FILE`.
+
+## Custom dialog — openCustomDialog & openBindSheet
+
+### openCustomDialog (general-purpose modal/non-modal)
+
+```ts
+import { ComponentContent } from '@kit.ArkUI';
+
+// 1. Define dialog content via @Builder
+@Builder
+function dialogContentBuilder(params: { message: string; close: () => void }) {
+  Column({ space: 16 }) {
+    Text(params.message).fontSize(16)
+    Button('OK').onClick(() => params.close())
+  }
+  .padding(24)
+  .backgroundColor(Color.White)
+  .borderRadius(16)
+}
+
+// 2. Open dialog
+const uiContext = this.getUIContext();
+const contentNode = new ComponentContent(uiContext, wrapBuilder(dialogContentBuilder), {
+  message: 'Hello',
+  close: () => uiContext.getPromptAction().closeCustomDialog(contentNode),
+});
+uiContext.getPromptAction().openCustomDialog(contentNode, {
+  alignment: DialogAlignment.Center,
+  isModal: true,
+  autoCancel: true,       // tap outside to close
+});
+```
+
+### openBindSheet (bottom half-modal sheet)
+
+```ts
+const uiContext = this.getUIContext();
+const sheetNode = new ComponentContent(uiContext, wrapBuilder(sheetBuilder), params);
+uiContext.openBindSheet(sheetNode, {
+  title: { title: 'Select Option' },
+  height: SheetSize.MEDIUM,
+  preferType: SheetType.BOTTOM,
+  detents: [SheetSize.MEDIUM, SheetSize.LARGE, 200],   // draggable heights
+  backgroundColor: '#F1F3F5',
+}, targetComponentId);
+```
+
+### bindContentCover (full-screen modal overlay)
+
+```ts
+@State isPresented: boolean = false;
+
+@Builder
+fullScreenContent() {
+  Column() {
+    Text('Full Screen Modal').fontSize(20)
+    Button('Close').onClick(() => { this.isPresented = false; })
+  }.width('100%').height('100%').backgroundColor(Color.White)
+}
+
+// Trigger:
+Button('Show').onClick(() => { this.isPresented = true; })
+  .bindContentCover($$this.isPresented, this.fullScreenContent(), {
+    modalTransition: ModalTransition.DEFAULT,   // .NONE, .ALPHA
+  })
+```
+
+> **Note**: Do NOT use the deprecated `CustomDialog` or `@ohos.promptAction` — use `UIContext.getPromptAction().openCustomDialog()`, `UIContext.openBindSheet()`, and `.bindContentCover()` instead.
+
+## Keyboard layout adaptation (软键盘适配)
+
+### Set keyboard avoidance mode (in UIAbility)
+
+```ts
+import { KeyboardAvoidMode } from '@kit.ArkUI';
+
+// OFFSET = page lifts up (default); RESIZE = page compresses; NONE = keyboard overlaps
+windowStage.getMainWindowSync().getUIContext().setKeyboardAvoidMode(KeyboardAvoidMode.RESIZE);
+```
+
+### Prevent a component from moving with keyboard
+
+```ts
+Row() { /* title bar — should stay fixed */ }
+  .expandSafeArea([SafeAreaType.KEYBOARD])
+  .zIndex(1)
+```
+
+### Monitor keyboard height
+
+```ts
+import { window } from '@kit.ArkUI';
+
+window.getLastWindow(this.getUIContext().getHostContext()).then(win => {
+  win.on('keyboardHeightChange', (height: number) => {
+    this.keyboardHeight = this.getUIContext().px2vp(height);
+  });
+});
+```
+
+### Focus control
+
+```ts
+TextInput().defaultFocus(true)                                    // auto-focus on page load
+this.getUIContext().getFocusController().requestFocus('inputId');  // programmatic focus
+this.getUIContext().getFocusController().clearFocus();             // dismiss keyboard
+```
+
+## Dark mode adaptation (深色模式适配)
+
+### Resource qualifier approach (recommended)
+
+Place light-mode colors/images in `resources/base/`, dark-mode variants (same filenames) in `resources/dark/`:
+
+```
+resources/base/element/color.json    → { "color": [{ "name": "bg_color", "value": "#FFFFFF" }] }
+resources/dark/element/color.json    → { "color": [{ "name": "bg_color", "value": "#1A1A1A" }] }
+resources/base/media/icon.png        → light icon
+resources/dark/media/icon.png        → dark icon
+```
+
+Usage: `$r('app.color.bg_color')` / `$r('app.media.icon')` — auto-switches with system theme.
+
+### Detect & react to color mode changes
+
+```ts
+// In EntryAbility — store current mode
+onCreate(): void {
+  AppStorage.setOrCreate('currentColorMode', this.context.config.colorMode);
+}
+onConfigurationUpdate(newConfig: Configuration): void {
+  AppStorage.setOrCreate('currentColorMode', newConfig.colorMode);
+}
+
+// In component — watch for changes
+@StorageProp('currentColorMode') @Watch('onColorModeChange')
+currentColorMode: number = ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET;
+
+onColorModeChange(): void {
+  const isDark = this.currentColorMode === ConfigurationConstant.ColorMode.COLOR_MODE_DARK;
+  // update status bar, custom logic, etc.
+}
+```
+
+### Programmatic mode switching
+
+```ts
+this.getUIContext().getHostContext()?.getApplicationContext()
+  .setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_DARK);   // or COLOR_MODE_LIGHT / COLOR_MODE_NOT_SET
+```
+
+## Background upload & download (request.agent)
+
+```ts
+import { request } from '@kit.BasicServicesKit';
+```
+
+### Background upload (supports pause/resume)
+
+```ts
+const config: request.agent.Config = {
+  action: request.agent.Action.UPLOAD,
+  url: 'https://example.com/upload',
+  mode: request.agent.Mode.BACKGROUND,
+  method: 'POST',
+  data: formItems,                       // Array of FormItem
+};
+const task = await request.agent.create(context, config);
+task.on('progress', (progress) => { /* track */ });
+task.on('completed', (progress) => { /* done */ });
+await task.start();
+await task.pause();    // pause
+await task.resume();   // resume with breakpoint
+```
+
+### Background download (auto breakpoint resume)
+
+```ts
+const config: request.agent.Config = {
+  action: request.agent.Action.DOWNLOAD,
+  url: 'https://example.com/file.zip',
+  mode: request.agent.Mode.BACKGROUND,
+  saveas: `./downloads/file.zip`,
+  overwrite: true,
+  gauge: true,
+};
+const task = await request.agent.create(context, config);
+task.on('progress', (progress) => { /* track */ });
+await task.start();
+```
+
+## Desktop shortcuts (桌面快捷方式)
+
+### 1. Create `resources/base/profile/shortcuts_config.json`
+
+```json
+{
+  "shortcuts": [
+    {
+      "shortcutId": "id_scan",
+      "label": "$string:shortcut_scan",
+      "icon": "$media:ic_scan",
+      "wants": [{
+        "bundleName": "com.example.myapp",
+        "moduleName": "entry",
+        "abilityName": "EntryAbility",
+        "parameters": { "shortcutKey": "ScanPage" }
+      }]
+    }
+  ]
+}
+```
+
+### 2. Register in module.json5
+
+```json5
+"abilities": [{
+  "name": "EntryAbility",
+  "metadata": [{
+    "name": "ohos.ability.shortcuts",
+    "resource": "$profile:shortcuts_config"
+  }]
+}]
+```
+
+### 3. Route based on shortcut parameter
+
+```ts
+// In EntryAbility — onCreate / onNewWant
+const shortcutKey = want?.parameters?.shortcutKey as string;
+if (shortcutKey === 'ScanPage') {
+  AppStorage.setOrCreate('targetPage', 'pages/Scan');
+}
+```
+
+Page reads `@StorageProp('targetPage')` and navigates accordingly.
+
+## Cross-module resource access (跨模块资源访问)
+
+### Access HAR resources (same as local)
+
+```ts
+Text($r('app.string.string_in_har'))
+Image($r('app.media.image_in_har'))
+// Better performance with .id for resourceManager:
+this.context.resourceManager.getStringSync($r('app.string.string_in_har').id);
+```
+
+### Access HSP resources (prefix with module name)
+
+```ts
+Text($r('[hsp1].string.string_in_hsp'))
+Image($r('[hsp1].media.image_in_hsp'))
+```
+
+Or via `createModuleContext`:
+
+```ts
+import { common } from '@kit.AbilityKit';
+const hspContext = await common.application.createModuleContext(this.context, 'hsp1');
+const str = hspContext.resourceManager.getStringByNameSync('string_in_hsp');
+```
+
+## Custom font (自定义字体)
+
+```ts
+// 1. Register font (in EntryAbility onWindowStageCreate or component aboutToAppear)
+const uiContext = windowStage.getMainWindowSync().getUIContext();
+uiContext.getFont().registerFont({
+  familyName: 'MyCustomFont',
+  familySrc: $rawfile('MyCustomFont.ttf'),
+});
+
+// 2. Use in component
+Text('Hello').fontFamily('MyCustomFont')
+```
+
+Font size follow/ignore system setting — configure in `profile/configuration.json`:
+
+```json
+{ "configuration": { "fontSizeScale": "followSystem", "fontSizeMaxScale": "2" } }
+```
+
+Reference in `app.json5`: `"configuration": "$profile:configuration"`.
+
+## Screen orientation (横竖屏切换)
+
+```ts
+import { window } from '@kit.ArkUI';
+
+// Get window instance
+const win = await window.getLastWindow(this.context);
+
+// Set orientation
+win.setPreferredOrientation(window.Orientation.USER_ROTATION_LANDSCAPE);   // enter landscape
+win.setPreferredOrientation(window.Orientation.USER_ROTATION_PORTRAIT);    // back to portrait
+win.setPreferredOrientation(window.Orientation.AUTO_ROTATION);             // follow sensor
+
+// Monitor window size for layout adaptation
+win.on('windowSizeChange', (size) => {
+  const orientation = display.getDefaultDisplaySync().orientation;
+  this.isLandscape = (orientation === display.Orientation.LANDSCAPE ||
+                      orientation === display.Orientation.LANDSCAPE_INVERTED);
+});
+```
+
+Also configurable in `module.json5`: `"abilities": [{ "orientation": "portrait" }]`.
+Options: `portrait`, `landscape`, `auto_rotation`, `auto_rotation_landscape`, `follow_desktop`.
+
+## Clipboard — pasteboard read/write
+
+```ts
+import { pasteboard } from '@kit.BasicServicesKit';
+
+// Write text to clipboard
+const pasteData = pasteboard.createData(pasteboard.MIMETYPE_TEXT_PLAIN, 'Hello World');
+const board = pasteboard.getSystemPasteboard();
+await board.setData(pasteData);
+
+// Read from clipboard
+const data = await board.getData();
+if (data.hasType(pasteboard.MIMETYPE_TEXT_PLAIN)) {
+  const text = data.getPrimaryText();
+}
+```
+
+Supported MIME types: `MIMETYPE_TEXT_PLAIN`, `MIMETYPE_TEXT_HTML`, `MIMETYPE_TEXT_URI`, `MIMETYPE_PIXELMAP`.
+
+## Gesture conflict resolution (手势冲突处理)
+
+### hitTestBehavior — control touch event response
+
+```ts
+Stack() {
+  BottomComponent().hitTestBehavior(HitTestMode.None)       // skip self, pass to sibling
+  TopComponent().hitTestBehavior(HitTestMode.Transparent)   // self responds AND passes to sibling
+}
+```
+
+| Mode | Behavior |
+|---|---|
+| `Default` | Self responds, blocks siblings |
+| `Transparent` | Self responds, does NOT block siblings |
+| `None` | Skips self, passes to siblings |
+| `Block` | Only self responds, stops all propagation |
+
+### Gesture binding priority
+
+```ts
+// Parent takes priority over child for same gesture type
+ParentComponent()
+  .priorityGesture(TapGesture().onAction(() => { /* parent handles */ }))
+
+// Both parent and child respond simultaneously
+ParentComponent()
+  .parallelGesture(PanGesture().onAction(() => { /* parent also handles */ }))
+
+// Block child gestures entirely
+ParentComponent()
+  .gesture(TapGesture(), GestureMask.IgnoreInternal)
+```
+
+### GestureGroup modes
+
+```ts
+// Sequential: all must succeed in order
+GestureGroup(GestureMode.Sequence, LongPressGesture(), PanGesture())
+
+// Parallel: all run simultaneously
+GestureGroup(GestureMode.Parallel, PinchGesture(), RotationGesture())
+
+// Exclusive: first to succeed wins
+GestureGroup(GestureMode.Exclusive, TapGesture(), SwipeGesture())
+```
+
+> **Note**: System gestures (onClick, onTouch, drag, bindMenu) always win over custom gestures of the same type.
+
+## Immersive window (沉浸式/全屏/避让区)
+
+### Extend component into status bar & navigation bar
+
+```ts
+// Method 1 — expandSafeArea (simplest, component-level)
+Column() { /* content */ }
+  .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
+
+// Method 2 — window-level fullscreen (affects all pages)
+const win = windowStage.getMainWindowSync();
+win.setWindowLayoutFullScreen(true);
+```
+
+### Get safe area dimensions for manual padding
+
+```ts
+import { window } from '@kit.ArkUI';
+
+const win = await window.getLastWindow(context);
+const systemAvoid = win.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
+const topHeight = px2vp(systemAvoid.topRect.height);       // status bar height
+const bottomHeight = px2vp(systemAvoid.bottomRect.height);  // navigation bar height
+
+// Listen for changes (e.g. split screen, fold/unfold)
+win.on('avoidAreaChange', (options: window.AvoidAreaOptions) => {
+  if (options.type === window.AvoidAreaType.TYPE_SYSTEM) {
+    // update top/bottom padding
+  }
+});
+```
+
+### Hide/show system bars
+
+```ts
+win.setSpecificSystemBarEnabled('status', false);             // hide status bar
+win.setSpecificSystemBarEnabled('navigationIndicator', false); // hide nav indicator
+```
+
+### Status bar text color (light/dark content)
+
+```ts
+win.setWindowSystemBarProperties({
+  statusBarContentColor: '#FFFFFF',   // white text for dark backgrounds
+});
+```
+
+## Common list operations (列表常用操作)
+
+### Swipe-to-delete (left swipe action)
+
+```ts
+ListItem() { /* content */ }
+  .swipeAction({
+    end: {
+      builder: () => {
+        Button('Delete').backgroundColor(Color.Red)
+          .onClick(() => {
+            animateTo({ duration: 300 }, () => {
+              this.dataList.splice(index, 1);
+            });
+          })
+      },
+      actionAreaDistance: 56,
+    },
+    edgeEffect: SwipeEdgeEffect.Spring,
+  })
+```
+
+### Drag reorder
+
+```ts
+List() {
+  ForEach(this.dataList, (item: string, index: number) => {
+    ListItem() { Text(item) }
+  })
+}
+.onItemDragStart((event: ItemDragInfo, itemIndex: number) => {
+  this.dragIndex = itemIndex;
+})
+.onItemDragMove((event: ItemDragInfo, itemIndex: number, insertIndex: number) => {
+  animateTo({ duration: 200 }, () => {
+    const tmp = this.dataList.splice(this.dragIndex, 1);
+    this.dataList.splice(insertIndex, 0, tmp[0]);
+    this.dragIndex = insertIndex;
+  });
+})
+```
+
+### Pull-down refresh
+
+```ts
+Refresh({ refreshing: $$this.isRefreshing }) {
+  List() { /* items */ }
+}
+.onRefreshing(() => {
+  // fetch new data...
+  this.isRefreshing = false;
+})
+```
+
+### Scroll to bottom (chat-style)
+
+```ts
+const scroller = new Scroller();
+List({ scroller }) { /* items */ }
+
+// After new message:
+scroller.scrollEdge(Edge.Bottom);
+// Or scroll to specific index:
+scroller.scrollToIndex(this.messages.length - 1);
+```
+
+### Keep scroll position on data insert (LazyForEach)
+
+```ts
+List() { LazyForEach(this.dataSource, ...) }
+  .maintainVisibleContentPosition(true)   // new items at top don't shift visible content
 ```
