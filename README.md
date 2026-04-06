@@ -400,7 +400,7 @@ After editing the source file, run `./scripts/build-dist.sh` to regenerate every
 - For paste-based tools (ChatGPT, DeepSeek, …), the system prompt is per-conversation; start a **new chat** after pasting.
 
 **Rule file is too long for the tool's context limit.**
-Unlikely — `SKILL.md` is ~370 lines (~12 KB). Every listed tool accepts it. If you still hit a limit, trim sections from `dist/plain/harmonyos-knowledge.md` manually.
+Unlikely — `SKILL.md` is ~800 lines (~30 KB). Every listed tool accepts it. If you still hit a limit, trim sections from `dist/plain/harmonyos-knowledge.md` manually.
 
 **`curl` fails with 404.**
 The branch in the URL may have moved. Check `https://github.com/DengShiyingA/harmonyos-ai-skills/branches` and update `$RAW` accordingly.

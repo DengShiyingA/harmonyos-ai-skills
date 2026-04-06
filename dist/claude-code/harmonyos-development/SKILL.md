@@ -666,34 +666,135 @@ OHPM Central Repository: https://developer.huawei.com/consumer/cn/deveco-service
 
 ## Best practices (official)
 
-Official best-practice docs at: https://developer.huawei.com/consumer/cn/best-practices
+Portal: https://developer.huawei.com/consumer/cn/best-practices
+Overview: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-best-practices-overview
 
-Key topics: ArkTS高性能编程, 布局优化, 组件绘制优化, 内存分析, 功耗优化, 应用安全编码, ArkWeb安全, 自由流转/跨端迁移, NDK跨语言调用, 行业场景解决方案 (新闻阅读 / 直播连麦 / 影音娱乐)
+### By topic
+
+**Performance**
+- ArkTS high-perf programming: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-arkts-high-performance
+- Layout optimization: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-improve-layout-performance
+- Component drawing optimization: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-pptimized-component-drawing
+- High-load frame rendering: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-dispose-highly-loaded-component-render
+- Memory analysis: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-analyze-memory-problem
+- Runtime performance detection: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-performance-runtime-detection
+
+**Stability**
+- Stability overview: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-stability-overview
+- Crash detection: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-stability-runtime-crash-detection
+- JS memory leak detection: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-stability-js-memleak-detection
+- Thread leak detection: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-stability-thread-leak-detection
+
+**Power / Battery**
+- Power optimization: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-application-power-optimization
+- Power testing: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-application-power-test
+
+**Media (Audio/Video)**
+- AVPlayer basic control: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-avplayer-basic-control
+- AVPlayer network video: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-avplayer-embeded-network-video
+- AudioCapturer recording: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-audio-record-base-on-audiocapturer
+- AVRecorder recording: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-audio-record-base-on-avrecorder-arkts
+- Video playback optimization: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-online-video-playback-lags-practice
+- Custom camera recording: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-custom-camera-video
+- Live stream audio call: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-hmos-live-stream-audio-call
+
+**Cross-device / 自由流转**
+- Free flow overview: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-hopping
+- App continuation: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-continue-cast
+- Cross-device migration: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-cross-end-migration
+
+**Multi-device**
+- PC app development: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-pc-guide
+- Wearable development: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-wear
+
+**UI / Layout**
+- Custom dialogs: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-customdialog-selection-and-development
+- Custom fonts: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-custom-font-settings
+- Soft keyboard adaptation: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-keyboard-layout-adapt
+
+**Security**
+- App security coding: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-harmony-application-security
+- ArkWeb security: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-arkweb-component-security
+
+**Web**
+- Web cross-domain: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-cross-domain-solutions-for-web-pages
+- Web performance: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-web-performance-optimization
+
+## Codelabs (hands-on tutorials)
+
+Portal: https://developer.huawei.com/consumer/cn/codelabsPortal/serviceTypes
+
+| Codelab | Topic |
+|---|---|
+| [Hello World](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_Next-HelloWorld) | Getting started |
+| [ArkTS Algorithm](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_NEXT-ArkTSAlgorithm) | ArkTS basics |
+| [Account Kit Login](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_NEXT-AccountKit-QuickLogin) | One-click Huawei ID login |
+| [Core Vision Kit](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_Next-CoreVisionKit) | ML / image recognition |
+| [Scan Kit](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_ScanKit-Codelab-Clientdemo-ArkTS) | QR/barcode scanning |
+| [Push Token](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_NEXT-Push-Get-Token) | Push notifications |
+| [Payment Kit](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_NEXT-Paymentkit) | In-app payment |
+| [Live View Delivery](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_NEXT-Live-View-Delivery) | Lock-screen live activity |
+| [Pedometer App](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_NEXT-PedometerApp) | Health/fitness sensors |
+| [Ads Kit](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_AdsKit-Native-ArkTS) | Native ads integration |
+
+## Training & certification
+
+- HarmonyOS basic cert: https://developer.huawei.com/consumer/cn/training/dev-cert-detail/101666948302721398
+- HarmonyOS advanced cert: https://developer.huawei.com/consumer/cn/training/dev-cert-detail/101684223987951077
+- Game dev cert: https://developer.huawei.com/consumer/cn/training/dev-cert-detail/101748228483629752
+- ArkUI development course (Part 1): https://developer.huawei.com/consumer/cn/training/course/video/C101727405259250407
+- ArkUI development course (Part 2): https://developer.huawei.com/consumer/cn/training/course/video/C101716428085146011
+- ArkTS syntax course: https://developer.huawei.com/consumer/cn/training/course/slightMooc/C101717496870909384
+- SDK open capabilities study path: https://developer.huawei.com/consumer/cn/training/study-path/101722568130701625
 
 ## Useful references
 
+**Core docs**
 - Official docs home: https://developer.huawei.com/consumer/cn/doc/
-- Getting started guide: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/application-dev-guide
+- Getting started: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/application-dev-guide
 - ArkTS language: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts
-- ArkTS high-perf programming: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-high-performance-programming
+- ArkTS high-perf: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-high-performance-programming
 - ArkUI framework: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkui
 - State management: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-state-management-overview
 - Navigation & routing: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-set-navigation-routing
 - Animations: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-use-animation
 - Concurrency: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-concurrency
-- ArkData (data mgmt): https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/data-mgmt-overview
-- Samples catalog: https://developer.huawei.com/consumer/cn/samples/
-- SDK / Kit overview: https://developer.huawei.com/consumer/cn/sdk
-- Best practices: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-best-practices-overview
+- ArkData: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/data-mgmt-overview
+- GC / garbage collection: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/gc-introduction
+
+**Kit guides**
+- Account Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/account-kit-guide
+- IAP Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/iap-kit-guide
+- Payment Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/payment-kit-guide
+- Push Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/push-kit-guide
+- Location Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/location-kit
+- Scan Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/scan-kit-guide
+- Live View Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/live-view-kit-guide
+- Core Vision Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/core-vision-kit-guide
+- Ads Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ads-kit-guide
+
+**IDE & tooling**
 - DevEco Studio: https://developer.huawei.com/consumer/cn/deveco-studio/
 - DevEco Testing: https://developer.huawei.com/consumer/cn/deveco-testing
+- AI programming assistant (CodeGenie): https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-codegenie
+- Code debugging: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-code-debugging
+- Code linter: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-code-linter
+- ArkUI previewer: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-previewer-arkui
+- Layout inspector: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-arkui-inspector
+- Emulator: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-emulator-create
+- hvigorw CLI build: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-hvigor-commandline
+- Testing overview: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/app-testing-overview
+
+**Ecosystem**
+- SDK / Kit overview: https://developer.huawei.com/consumer/cn/sdk
 - OHPM package registry: https://developer.huawei.com/consumer/cn/deveco-service
+- Samples catalog: https://developer.huawei.com/consumer/cn/samples/
+- Knowledge map: https://developer.huawei.com/consumer/cn/app/knowledge-map
+- Quick-start Codelab: https://developer.huawei.com/consumer/cn/codelabsPortal/getstarted/101718800110527001
 - Design resources: https://developer.huawei.com/consumer/cn/design/resource
 - HarmonyOS Symbol icons: https://developer.huawei.com/consumer/cn/design/harmonyos-symbol
-- Codelabs (hands-on tutorials): https://developer.huawei.com/consumer/cn/codelabsPortal/serviceTypes
-- Quick-start Codelab: https://developer.huawei.com/consumer/cn/codelabsPortal/getstarted/101718800110527001
-- Knowledge map: https://developer.huawei.com/consumer/cn/app/knowledge-map
 - AppGallery Connect: https://developer.huawei.com/consumer/cn/agconnect
 - App review policy: https://developer.huawei.com/consumer/cn/doc/app/50000
-- HarmonyOS developer certification: https://developer.huawei.com/consumer/cn/training/dev-cert-detail/101666948302721398
-- Cangjie beta signup: https://developer.huawei.com/consumer/cn/activityDetail/cangjie-beta
+- Meta-service review: https://developer.huawei.com/consumer/cn/doc/app/50129
+- Cangjie beta: https://developer.huawei.com/consumer/cn/activityDetail/cangjie-beta
+- ArkCompiler: https://developer.huawei.com/consumer/cn/arkcompiler
