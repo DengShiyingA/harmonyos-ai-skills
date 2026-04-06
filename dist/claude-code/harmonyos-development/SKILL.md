@@ -2682,3 +2682,152 @@ const result = await subjectSegmentation.doSegmentation(
 // result.subjectCount, result.subjectDetails[i].subjectRectangle
 await subjectSegmentation.release();
 ```
+
+## fileIo — application file read/write
+
+Core file operations via `@kit.CoreFileKit`. All paths should come from Context properties (filesDir, cacheDir, etc.).
+
+```ts
+import { fileIo as fs } from '@kit.CoreFileKit';
+
+const context = getContext(this);
+
+// Write a file
+const filePath = context.filesDir + '/data.json';
+const file = fs.openSync(filePath, fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE);
+fs.writeSync(file.fd, JSON.stringify({ key: 'value' }));
+fs.closeSync(file);
+
+// Read a file
+const readFile = fs.openSync(filePath, fs.OpenMode.READ_ONLY);
+const buf = new ArrayBuffer(4096);
+const readLen = fs.readSync(readFile.fd, buf);
+const content = String.fromCharCode(...new Uint8Array(buf.slice(0, readLen)));
+fs.closeSync(readFile);
+
+// Check existence
+const exists = fs.accessSync(filePath);
+
+// List directory
+const entries = fs.listFileSync(context.filesDir);
+
+// Copy file
+fs.copyFileSync(filePath, context.cacheDir + '/data_backup.json');
+
+// Delete file
+fs.unlinkSync(filePath);
+
+// Stat file (size, mtime)
+const stat = fs.statSync(filePath);
+console.info(`size: ${stat.size}, mtime: ${stat.mtime}`);
+```
+
+### Read file from Picker URI
+
+```ts
+// After picker returns a URI (temporary read-only permission)
+const file = fs.openSync(uri, fs.OpenMode.READ_ONLY);
+const buf = new ArrayBuffer(4096);
+const len = fs.readSync(file.fd, buf);
+fs.closeSync(file);
+```
+
+## AVPlayer — unified audio/video playback
+
+`AVPlayer` from `@kit.MediaKit` handles mp4/mp3/mkv/mpeg-ts etc. — just provide the source, no manual decode needed.
+
+```ts
+import { media } from '@kit.MediaKit';
+
+// Create player
+const avPlayer = await media.createAVPlayer();
+
+// Set callbacks
+avPlayer.on('stateChange', (state: string) => {
+  switch (state) {
+    case 'initialized':    // source set, prepare now
+      avPlayer.prepare();
+      break;
+    case 'prepared':       // ready to play
+      avPlayer.play();
+      break;
+    case 'completed':      // playback finished
+      avPlayer.release();
+      break;
+  }
+});
+
+avPlayer.on('error', (err) => {
+  console.error('AVPlayer error:', err.message);
+  avPlayer.release();
+});
+
+// Set source — local file (fd)
+const file = fs.openSync(context.filesDir + '/video.mp4', fs.OpenMode.READ_ONLY);
+avPlayer.fdSrc = { fd: file.fd, offset: 0, length: fs.statSync(file.fd).size };
+
+// Or network URL
+avPlayer.url = 'https://example.com/audio.mp3';
+```
+
+### AVPlayer with video surface (XComponent)
+
+```ts
+avPlayer.on('stateChange', (state: string) => {
+  if (state === 'initialized') {
+    avPlayer.surfaceId = xComponentSurfaceId;  // from XComponent.onLoad
+    avPlayer.prepare();
+  } else if (state === 'prepared') {
+    avPlayer.play();
+  }
+});
+avPlayer.url = 'https://example.com/video.mp4';
+```
+
+### AVPlayer controls
+
+```ts
+avPlayer.pause();
+avPlayer.play();
+avPlayer.seek(30000);              // seek to 30s (ms)
+avPlayer.setSpeed(media.PlaybackSpeed.SPEED_FORWARD_2_00_X);
+avPlayer.setVolume(0.5);           // 0.0 ~ 1.0
+avPlayer.stop();                   // stop → can prepare() again
+avPlayer.release();                // release all resources
+```
+
+### AVRecorder — audio/video recording
+
+```ts
+import { media } from '@kit.MediaKit';
+
+const recorder = await media.createAVRecorder();
+
+const config: media.AVRecorderConfig = {
+  audioSourceType: media.AudioSourceType.AUDIO_SOURCE_TYPE_MIC,
+  videoSourceType: media.VideoSourceType.VIDEO_SOURCE_TYPE_SURFACE_YUV,
+  profile: {
+    audioBitrate: 48000,
+    audioChannels: 2,
+    audioCodec: media.CodecMimeType.AUDIO_AAC,
+    audioSampleRate: 48000,
+    fileFormat: media.ContainerFormatType.CFT_MPEG_4,
+    videoBitrate: 2000000,
+    videoCodec: media.CodecMimeType.VIDEO_AVC,
+    videoFrameWidth: 1920,
+    videoFrameHeight: 1080,
+    videoFrameRate: 30
+  },
+  url: `fd://${file.fd}`,       // file descriptor for output
+  rotation: 0
+};
+
+await recorder.prepare(config);
+// For video: const surfaceId = await recorder.getInputSurface();
+await recorder.start();
+// ... recording ...
+await recorder.stop();
+await recorder.release();
+```
+
+For background playback: must create AVSession + request AUDIO_PLAYBACK long-running task (see AVSession Kit section).
