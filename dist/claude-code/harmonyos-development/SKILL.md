@@ -1,34 +1,50 @@
 ---
 name: harmonyos-development
 description: >
-  Comprehensive guide to HarmonyOS / HarmonyOS NEXT (鸿蒙) native app development.
-  Use this skill when the user asks about: 鸿蒙开发 / 华为开发者 / HarmonyOS / ArkTS / ArkUI /
-  DevEco Studio / Stage model (UIAbility, ExtensionAbility, AbilityStage, WindowStage) /
-  state-management decorators (@State, @Prop, @Link, @Provide, @Consume, @Observed, @ObjectLink,
-  @Watch, @Builder, @Styles, @Extend, @StorageLink, @LocalStorageLink) /
-  V2 decorators (@ComponentV2, @Local, @ObservedV2, @Trace, @Monitor, AppStorageV2) /
-  component lifecycle (aboutToAppear, onDidBuild, aboutToReuse, aboutToRecycle, onPageShow) /
-  Navigation / NavPathStack / navDestination / router /
-  layout containers (Column, Row, Stack, Flex, RelativeContainer, GridRow, GridCol, List) /
-  animation (animateTo, .animation(), Curve, geometryTransition, spring) /
-  performance (LazyForEach, @Reusable, cachedCount, layout nesting) /
-  HarmonyOS Kits (Ability Kit, ArkUI, ArkGraphics, Network Kit, Media Kit, Location Kit,
-  Core Speech Kit, Core Vision Kit, Scan Kit, Push Kit, IAP Kit, Payment Kit, Live View Kit,
-  Camera Kit, Media Library Kit, and 50+ more) /
-  concurrency (TaskPool, Worker, @Concurrent, @Sendable, taskpool.execute) /
-  HAP/HSP/HAR packaging / app.json5 / module.json5 / oh-package.json5 / build-profile.json5 /
-  atomic services (原子化服务 / 元服务 / 服务卡片 / FormExtensionAbility) /
-  distributed features (流转 / cross-device continuation) /
-  multi-device responsive layout (一多 / breakpoints / foldable) /
-  stability (crash types / JS_ERROR / CPP_CRASH / APP_FREEZE / ErrorObserver / HiAppEvent) /
-  background tasks (BackgroundTasksKit / transient / continuous / deferred / backgroundMode) /
-  security (permissions / abilityAccessCtrl / HUKS / encryption levels) /
-  testing (arkxtest / @ohos/hypium / JsUnit / UiTest / Driver / ON) /
-  DevEco Studio 6.x setup (hvigor / hvigorw / build-profile) /
-  sys.symbol icons / OHPM / ohpm / ArkCompiler / 仓颉 / Cangjie /
-  publishing (AppGallery Connect / signing / hvigorw assembleApp) /
-  best practices / performance optimization / coding style /
-  samples catalog (developer.huawei.com/consumer/cn/samples)
+  1200+ lines of production-ready HarmonyOS NEXT (鸿蒙) development knowledge —
+  ArkTS language rules, ArkUI component patterns, 50+ Kit APIs, performance
+  optimization, and common gotchas extracted from official Huawei documentation.
+
+  Trigger keywords (EN): HarmonyOS, HarmonyOS NEXT, ArkTS, ArkUI, .ets file,
+  DevEco Studio, Stage model, UIAbility, ExtensionAbility, AbilityStage, WindowStage,
+  @State, @Prop, @Link, @Provide, @Consume, @Observed, @ObjectLink, @Watch, @Builder,
+  @Styles, @Extend, @StorageLink, @LocalStorageLink, @ComponentV2, @Local, @ObservedV2,
+  @Trace, @Monitor, AppStorageV2, aboutToAppear, onDidBuild, aboutToReuse, onPageShow,
+  Navigation, NavPathStack, navDestination, router, Column, Row, Stack, Flex, List,
+  RelativeContainer, GridRow, GridCol, LazyForEach, ForEach, @Reusable, cachedCount,
+  animateTo, .animation(), Curve, geometryTransition, spring animation,
+  Ability Kit, Network Kit, Media Kit, Location Kit, Core Speech Kit, Core Vision Kit,
+  Scan Kit, Push Kit, IAP Kit, Payment Kit, Live View Kit, Camera Kit, Media Library Kit,
+  Audio Kit, Image Kit, ArkGraphics 2D, ArkGraphics 3D, Notification Kit, ArkData, ArkWeb,
+  Form Kit, Connectivity Kit, Crypto Architecture Kit, Agent Framework Kit, MindSpore Lite,
+  http.createHttp, preferences, relationalStore, distributedKVStore, fileIo, photoAccessHelper,
+  geoLocationManager, speechRecognizer, notificationManager, hilog, wantAgent,
+  TaskPool, Worker, @Concurrent, @Sendable, taskpool.execute, SharedArrayBuffer,
+  HAP, HSP, HAR, app.json5, module.json5, oh-package.json5, build-profile.json5,
+  FormExtensionAbility, WorkSchedulerExtensionAbility, ServiceExtensionAbility,
+  sys.symbol, SymbolGlyph, OHPM, ohpm, ArkCompiler, Cangjie,
+  hvigor, hvigorw, hdc, HiLog, SmartPerf, DevEco Profiler, DevEco Testing,
+  AppGallery Connect, hvigorw assembleApp,
+  ErrorObserver, HiAppEvent, APP_FREEZE, JS_ERROR, CPP_CRASH, OOM,
+  backgroundTaskManager, requestSuspendDelay, startBackgroundRunning, workScheduler,
+  abilityAccessCtrl, requestPermissionsFromUser, HUKS,
+  arkxtest, @ohos/hypium, JsUnit, UiTest, Driver, ON,
+  $r(), $rawfile(), Resource, getContext
+
+  触发关键词（中文）：鸿蒙, 鸿蒙开发, 鸿蒙应用, 鸿蒙NEXT, 华为开发者, 华为手机开发,
+  方舟语言, 方舟编译器, 方舟UI, 声明式UI, 鸿蒙组件, 鸿蒙页面,
+  状态管理, 组件通信, 页面跳转, 页面路由, 导航路由,
+  鸿蒙动画, 鸿蒙列表, 懒加载, 虚拟列表, 组件复用,
+  鸿蒙网络请求, 鸿蒙数据存储, 鸿蒙文件操作, 鸿蒙数据库,
+  鸿蒙权限, 权限申请, 动态权限, 鸿蒙安全,
+  鸿蒙测试, 单元测试, UI自动化测试,
+  鸿蒙后台任务, 后台运行, 长时任务, 短时任务,
+  鸿蒙打包, 鸿蒙发布, 应用上架, 华为应用市场,
+  鸿蒙分布式, 跨设备, 流转, 多设备适配, 折叠屏, 平板适配, 一多,
+  原子化服务, 元服务, 服务卡片, 桌面卡片,
+  鸿蒙调试, hdc命令, 日志, 性能优化, 布局优化, 内存优化,
+  鸿蒙图标, 主题图标, 仓颉语言,
+  ArkTS和TypeScript区别, 怎么写鸿蒙应用, 鸿蒙入门, 鸿蒙教程
 ---
 
 # HarmonyOS (鸿蒙) Development
