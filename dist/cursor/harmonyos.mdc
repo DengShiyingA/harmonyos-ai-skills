@@ -174,6 +174,125 @@ struct Index {
 }
 ```
 
+### Component lifecycle callbacks
+
+**All `@Component`:**
+
+| Callback | When | Notes |
+|---|---|---|
+| `aboutToAppear()` | After created, BEFORE `build()` | Can change state here; changes apply in first `build()` |
+| `onDidBuild()` | After `build()` completes | Do NOT change state or call `animateTo()`. API 12+ |
+| `aboutToDisappear()` | Before destruction | Do NOT change state (especially `@Link`). No async/await |
+| `aboutToReuse(params)` | Reusable component re-added from cache | Update state with new params. API 10+ |
+| `aboutToRecycle()` | Component moving to reuse cache | Release heavy resources. API 10+ |
+
+**Only `@Entry`:**
+
+| Callback | When |
+|---|---|
+| `onPageShow()` | Each time page is displayed |
+| `onPageHide()` | Each time page is hidden |
+| `onBackPress(): boolean` | User taps Back. Return `true` to override default |
+
+**Execution order (cold start):**
+`Parent aboutToAppear → Parent build → Parent onDidBuild → Child aboutToAppear → Child build → Child onDidBuild → onPageShow`
+
+### Layout containers
+
+| Container | When to use | Performance |
+|---|---|---|
+| `Column` / `Row` | Linear arrangement | **Best** — single-pass layout |
+| `Stack` | Overlapping / stacking | Good |
+| `Flex` | Items need stretch/shrink | **Slower** — extra pass for flexGrow/flexShrink |
+| `RelativeContainer` | Complex layouts, avoid deep nesting | Good — flat structure |
+| `GridRow` / `GridCol` | Responsive multi-device grids | Good |
+| `List` | Scrollable list with recycling | Best for long lists (with `LazyForEach`) |
+
+**Column/Row alignment:**
+- Main axis: `justifyContent(FlexAlign.Start | .Center | .End | .SpaceBetween | .SpaceAround | .SpaceEvenly)`
+- Cross axis: Column → `alignItems(HorizontalAlign.Start | .Center | .End)`, Row → `alignItems(VerticalAlign.Top | .Center | .Bottom)`
+
+**Stack:** `alignContent` takes 9 positions (TopStart, Top, TopEnd, Start, Center, End, BottomStart, Bottom, BottomEnd). `zIndex` controls layer order.
+
+**Flex vs Column/Row:** Flex requires re-layout for `flexShrink`/`flexGrow`. Always prefer `Column`/`Row` when you don't need flex behavior.
+
+**RelativeContainer:** Use `__container__` as anchor ID for the container itself. Each child needs `.id()`. Set `.alignRules({ top: { anchor: 'id', align: VerticalAlign.Bottom } })`.
+
+### Performance-critical patterns
+
+**`LazyForEach` for large lists** (only renders visible items):
+```ts
+class MyDataSource implements IDataSource {
+  private data: string[] = []
+  totalCount(): number { return this.data.length }
+  getData(index: number): string { return this.data[index] }
+  registerDataChangeListener(listener: DataChangeListener): void { /* ... */ }
+  unregisterDataChangeListener(listener: DataChangeListener): void { /* ... */ }
+}
+
+List() {
+  LazyForEach(this.dataSource, (item: string, index: number) => {
+    ListItem() { Text(item) }
+  }, (item: string) => item)  // key generator — MUST produce unique keys
+}
+.cachedCount(5)  // preload 5 items off-screen
+```
+
+**`@Reusable` components** (69% faster component creation):
+```ts
+@Reusable
+@Component
+struct MyListItem {
+  @State message: Message = new Message('default')
+
+  aboutToReuse(params: Record<string, ESObject>) {
+    this.message = params.message as Message
+  }
+  aboutToRecycle() { /* release heavy resources */ }
+  build() { Text(this.message.value) }
+}
+```
+Rules: only works within same parent; don't nest `@Reusable` inside `@Reusable`; combine with `LazyForEach`.
+
+**Layout performance rules:**
+- Max 3 levels of nesting — each level adds layout cost
+- Use `if/else` over `.visibility()` — hidden components still participate in layout
+- Use `RelativeContainer` to flatten deep Row/Column/Flex hierarchies (documented 26% improvement)
+- Set explicit dimensions on `List` inside `Scroll` — without them ALL children load at once
+- Avoid `@StorageLink` for frequently-changing data — propagates to all subscribers
+
+### Animation
+
+**Explicit animation (`animateTo`)** — state changes in closure animate:
+```ts
+this.getUIContext()?.animateTo({
+  duration: 300,
+  curve: Curve.EaseOut,
+  onFinish: () => { console.info('done') }
+}, () => {
+  this.width = 200  // this change animates
+})
+```
+
+**Property animation (`.animation()`)** — implicit, applied to preceding attributes:
+```ts
+Text('Hello')
+  .width(this.myWidth)
+  .animation({ duration: 500, curve: Curve.EaseIn })
+```
+
+**Curve values:** `Curve.Linear | .Ease | .EaseIn | .EaseOut | .EaseInOut | .FastOutSlowIn | .Friction | .Sharp | .Smooth`
+
+**Spring curves (string):** `'spring(velocity,mass,stiffness,damping)'`, `'springMotion(response,dampingFraction)'`, `'responsiveSpringMotion(response,dampingFraction)'`
+
+**Shared element transition:**
+```ts
+// Bind same geometryTransition ID on source and target
+Image($r('app.media.photo')).geometryTransition('picture')
+// Wrap state change in animateTo
+this.getUIContext()?.animateTo({ duration: 300 }, () => { this.isExpanded = !this.isExpanded })
+```
+
 ### State-management decorators
 
 | Decorator | Scope | Purpose |
@@ -210,6 +329,13 @@ struct Index {
 ```
 
 Arrays of `@Observed` instances require `@ObjectLink` in the row component — parent `@State tasks: Task[]` only reacts to array mutations (push/splice/reassign), not per-item changes.
+
+**State management performance rules (from official docs):**
+- Minimize state scope: only `@State` variables that directly affect UI
+- `@Prop` creates **deep copy** on every update — for large objects, prefer `@Link` (by reference) or `@ObjectLink`
+- `@Link` is preferred for inter-component communication — avoids unnecessary re-renders
+- `@Observed` + `@ObjectLink` for nested objects — fine-grained property observation
+- Avoid `@StorageLink` for frequently-changing data — global state changes propagate to ALL subscribers
 
 ### Builders, styles, extends
 
