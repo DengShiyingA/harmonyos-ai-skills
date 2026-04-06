@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" font-family="-apple-system, 'PingFang SC', 'Söhne', 'Microsoft YaHei', sans-serif">
+  <rect width="1280" height="640" fill="#FAF5EE"/>
+
+  <!-- Title -->
+  <text x="640" y="50" font-size="26" font-weight="700" fill="#2d2520" text-anchor="middle">AI writing HarmonyOS code: with vs without the knowledge pack</text>
+
+  <!-- Left: Before -->
+  <rect x="30" y="78" width="590" height="510" rx="16" fill="#fff" stroke="#e8c4b8" stroke-width="1.5"/>
+  <rect x="30" y="78" width="590" height="42" rx="16" fill="#c0584a"/>
+  <rect x="30" y="104" width="590" height="16" fill="#c0584a"/>
+  <text x="55" y="106" font-size="16" font-weight="700" fill="#fff">  Without knowledge pack</text>
+  <text x="580" y="106" font-size="12" fill="rgba(255,255,255,0.7)" text-anchor="end">Default AI output</text>
+
+  <text x="50" y="155" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#8a7b6b">// Ask AI to write a stateful HarmonyOS component</text>
+  <text x="50" y="185" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#c0584a">import React, { useState } from 'react';</text>
+  <text x="50" y="215" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">function MyPage() {</text>
+  <text x="70" y="245" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#c0584a">const [count, setCount] = useState(0);</text>
+  <text x="70" y="275" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">return (</text>
+  <text x="90" y="305" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#c0584a">&lt;div onClick={() =&gt; setCount(c =&gt; c+1)}&gt;</text>
+  <text x="110" y="335" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">&lt;p&gt;{count}&lt;/p&gt;</text>
+  <text x="90" y="365" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#c0584a">&lt;/div&gt;</text>
+  <text x="70" y="395" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">);</text>
+  <text x="50" y="425" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">}</text>
+
+  <line x1="50" y1="455" x2="590" y2="455" stroke="#e8c4b8" stroke-width="1"/>
+  <text x="50" y="480" font-size="13" fill="#c0584a">  This is React, not HarmonyOS</text>
+  <text x="50" y="502" font-size="13" fill="#c0584a">  ArkTS has no useState</text>
+  <text x="50" y="524" font-size="13" fill="#c0584a">  ArkUI has no &lt;div&gt; or JSX</text>
+  <text x="50" y="546" font-size="13" fill="#c0584a">  Compile error, completely unusable</text>
+
+  <!-- Right: After -->
+  <rect x="660" y="78" width="590" height="510" rx="16" fill="#fff" stroke="#D97757" stroke-width="1.5"/>
+  <rect x="660" y="78" width="590" height="42" rx="16" fill="#D97757"/>
+  <rect x="660" y="104" width="590" height="16" fill="#D97757"/>
+  <text x="685" y="106" font-size="16" font-weight="700" fill="#fff">  With knowledge pack</text>
+  <text x="1210" y="106" font-size="12" fill="rgba(255,255,255,0.7)" text-anchor="end">Knowledge-powered</text>
+
+  <text x="680" y="155" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#8a7b6b">// Ask AI to write a stateful HarmonyOS component</text>
+  <text x="680" y="185" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#D97757">@Entry</text>
+  <text x="680" y="215" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#D97757">@Component</text>
+  <text x="680" y="245" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">struct MyPage {</text>
+  <text x="700" y="275" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#b8860b">@State count: number = 0;</text>
+  <text x="700" y="305" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">build() {</text>
+  <text x="720" y="335" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">Column({ space: 12 }) {</text>
+  <text x="740" y="365" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#D97757">Text(`Count: ${this.count}`)</text>
+  <text x="760" y="395" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">.fontSize(24)</text>
+  <text x="740" y="425" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">Button('Increment')</text>
+  <text x="760" y="455" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">.onClick(() =&gt; this.count++)</text>
+  <text x="720" y="485" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">}</text>
+  <text x="700" y="515" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">}</text>
+  <text x="680" y="545" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#2d2520">}</text>
+
+  <line x1="680" y1="560" x2="1220" y2="560" stroke="#D97757" stroke-width="1" opacity="0.3"/>
+  <text x="680" y="580" font-size="13" fill="#D97757">  Proper ArkTS + ArkUI declarative syntax, compiles successfully</text>
+
+  <!-- Footer -->
+  <text x="640" y="625" font-size="14" font-weight="500" fill="#D97757" text-anchor="middle" opacity="0.6">github.com/DengShiyingA/harmonyos-ai-skills</text>
+</svg>

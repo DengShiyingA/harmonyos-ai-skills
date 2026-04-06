@@ -2,7 +2,7 @@
 
 **English** | [简体中文](./README.md)
 
-<img src="./assets/hero-banner.svg" alt="HarmonyOS AI Skills" width="100%"/>
+<img src="./assets/en/hero-banner.svg" alt="HarmonyOS AI Skills" width="100%"/>
 
 # 🧠 HarmonyOS AI Skills
 
@@ -39,7 +39,7 @@ The problem isn't the AI — it's that no one's ever fed it HarmonyOS knowledge.
 ---
 
 <div align="center">
-<img src="./assets/before-after.svg" alt="Before vs After comparison" width="100%"/>
+<img src="./assets/en/before-after.svg" alt="Before vs After comparison" width="100%"/>
 </div>
 
 ---
@@ -71,7 +71,7 @@ A skill is a chunk of domain knowledge (in Markdown) that an AI coding tool load
 ## What's inside the knowledge
 
 <div align="center">
-<img src="./assets/knowledge-map.svg" alt="Knowledge architecture" width="100%"/>
+<img src="./assets/en/knowledge-map.svg" alt="Knowledge architecture" width="100%"/>
 </div>
 
 The skill teaches the AI everything needed to read, write, review, and debug HarmonyOS NEXT native apps (~1200 lines of dense, actionable knowledge):

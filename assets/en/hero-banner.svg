@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" font-family="-apple-system, 'PingFang SC', 'Söhne', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <linearGradient id="warm" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D97757"/>
+      <stop offset="100%" stop-color="#E8C872"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" fill="#FAF5EE"/>
+
+  <!-- Subtle grid -->
+  <g opacity="0.06" stroke="#D97757" stroke-width="1">
+    <line x1="0" y1="160" x2="1280" y2="160"/>
+    <line x1="0" y1="320" x2="1280" y2="320"/>
+    <line x1="0" y1="480" x2="1280" y2="480"/>
+    <line x1="320" y1="0" x2="320" y2="640"/>
+    <line x1="640" y1="0" x2="640" y2="640"/>
+    <line x1="960" y1="0" x2="960" y2="640"/>
+  </g>
+
+  <!-- Decorative circles -->
+  <circle cx="1080" cy="140" r="180" fill="none" stroke="#D97757" stroke-width="1.5" opacity="0.1"/>
+  <circle cx="1120" cy="120" r="100" fill="none" stroke="#E8C872" stroke-width="1.5" opacity="0.08"/>
+  <circle cx="200" cy="540" r="120" fill="none" stroke="#D97757" stroke-width="1.5" opacity="0.06"/>
+
+  <!-- Tag pill -->
+  <rect x="80" y="85" width="200" height="34" rx="17" fill="rgba(217,119,87,0.1)" stroke="#D97757" stroke-width="1"/>
+  <text x="180" y="107" font-size="13" font-weight="600" fill="#D97757" text-anchor="middle" letter-spacing="1.5">OPEN SOURCE · MIT</text>
+
+  <!-- Main title -->
+  <text x="80" y="205" font-size="68" font-weight="800" fill="#2d2520" letter-spacing="-1">HarmonyOS</text>
+  <text x="80" y="285" font-size="68" font-weight="800" fill="#D97757" letter-spacing="-1">AI Skills</text>
+
+  <!-- Subtitle -->
+  <text x="80" y="340" font-size="22" font-weight="400" fill="#6b5d50">Knowledge pack for 11+ AI coding assistants</text>
+
+  <!-- Description -->
+  <text x="80" y="390" font-size="16" fill="#8a7b6b">One Markdown source, drop-in configs for every AI tool</text>
+  <text x="80" y="414" font-size="16" fill="#8a7b6b">1200+ lines of knowledge extracted from official Huawei docs</text>
+
+  <!-- Tool pills row 1 -->
+  <g font-size="13" font-weight="500" fill="#4a3f35">
+    <rect x="80" y="450" width="115" height="34" rx="17" fill="#fff" stroke="#D97757" stroke-width="1"/>
+    <text x="137" y="472" text-anchor="middle">Claude Code</text>
+
+    <rect x="205" y="450" width="80" height="34" rx="17" fill="#fff" stroke="#d4c4b0" stroke-width="1"/>
+    <text x="245" y="472" text-anchor="middle">Cursor</text>
+
+    <rect x="295" y="450" width="80" height="34" rx="17" fill="#fff" stroke="#d4c4b0" stroke-width="1"/>
+    <text x="335" y="472" text-anchor="middle">Copilot</text>
+
+    <rect x="385" y="450" width="75" height="34" rx="17" fill="#fff" stroke="#d4c4b0" stroke-width="1"/>
+    <text x="422" y="472" text-anchor="middle">Codex</text>
+
+    <rect x="470" y="450" width="105" height="34" rx="17" fill="#fff" stroke="#d4c4b0" stroke-width="1"/>
+    <text x="522" y="472" text-anchor="middle">Gemini CLI</text>
+
+    <rect x="585" y="450" width="90" height="34" rx="17" fill="#fff" stroke="#d4c4b0" stroke-width="1"/>
+    <text x="630" y="472" text-anchor="middle">Windsurf</text>
+  </g>
+
+  <!-- Tool pills row 2 -->
+  <g font-size="13" font-weight="500" fill="#4a3f35">
+    <rect x="80" y="494" width="90" height="34" rx="17" fill="#fff" stroke="#d4c4b0" stroke-width="1"/>
+    <text x="125" y="516" text-anchor="middle">Continue</text>
+
+    <rect x="180" y="494" width="65" height="34" rx="17" fill="#fff" stroke="#d4c4b0" stroke-width="1"/>
+    <text x="212" y="516" text-anchor="middle">Cline</text>
+
+    <rect x="255" y="494" width="85" height="34" rx="17" fill="#fff" stroke="#d4c4b0" stroke-width="1"/>
+    <text x="297" y="516" text-anchor="middle">ChatGPT</text>
+
+    <rect x="350" y="494" width="90" height="34" rx="17" fill="#fff" stroke="#d4c4b0" stroke-width="1"/>
+    <text x="395" y="516" text-anchor="middle">DeepSeek</text>
+
+    <rect x="450" y="494" width="75" height="34" rx="17" fill="#fff" stroke="#d4c4b0" stroke-width="1"/>
+    <text x="487" y="516" text-anchor="middle">Ollama</text>
+
+    <rect x="535" y="494" width="85" height="34" rx="17" fill="#fff" stroke="#d4c4b0" stroke-width="1"/>
+    <text x="577" y="516" text-anchor="middle">+3 more</text>
+  </g>
+
+  <!-- Right side numbers -->
+  <text x="850" y="210" font-size="110" font-weight="800" fill="#D97757" letter-spacing="-3">1200+</text>
+  <text x="850" y="252" font-size="20" fill="#6b5d50">lines · from official docs</text>
+
+  <text x="850" y="345" font-size="72" font-weight="800" fill="#c4956a" letter-spacing="-2">50+</text>
+  <text x="1030" y="340" font-size="20" fill="#6b5d50">Kits</text>
+
+  <text x="850" y="435" font-size="72" font-weight="800" fill="#E8C872" letter-spacing="-2">11+</text>
+  <text x="1030" y="430" font-size="20" fill="#6b5d50">AI tools</text>
+
+  <!-- GitHub -->
+  <text x="850" y="520" font-size="15" font-weight="500" fill="#D97757">github.com/DengShiyingA/harmonyos-ai-skills</text>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="632" width="1280" height="8" fill="url(#warm)"/>
+</svg>
