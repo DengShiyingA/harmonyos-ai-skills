@@ -32,7 +32,7 @@
 
 <br/>
 
-[🚀 安装](#installation) · [📖 知识内容](#whats-inside-the-knowledge) · [🛠️ 支持的工具](#supported-ai-tools) · [✅ 验证效果](#verifying-it-works)
+[🚀 安装](#安装) · [📖 知识内容](#知识包内容) · [🛠️ 支持的工具](#支持的-ai-工具) · [✅ 验证效果](#验证是否生效)
 
 </div>
 
@@ -53,7 +53,7 @@ ln -s ~/src/harmonyos-ai-skills/harmonyos-development ~/.claude/skills/harmonyos
 # 重启 Claude Code，然后问："What skills are available?"
 ```
 
-用其他工具？查看[下方完整安装指南](#installation)。
+用其他工具？查看[下方完整安装指南](#安装)。
 
 ---
 
