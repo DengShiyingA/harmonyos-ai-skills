@@ -3324,3 +3324,123 @@ GestureGroup(GestureMode.Exclusive, TapGesture(), SwipeGesture())
 ```
 
 > **Note**: System gestures (onClick, onTouch, drag, bindMenu) always win over custom gestures of the same type.
+
+## Immersive window (沉浸式/全屏/避让区)
+
+### Extend component into status bar & navigation bar
+
+```ts
+// Method 1 — expandSafeArea (simplest, component-level)
+Column() { /* content */ }
+  .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
+
+// Method 2 — window-level fullscreen (affects all pages)
+const win = windowStage.getMainWindowSync();
+win.setWindowLayoutFullScreen(true);
+```
+
+### Get safe area dimensions for manual padding
+
+```ts
+import { window } from '@kit.ArkUI';
+
+const win = await window.getLastWindow(context);
+const systemAvoid = win.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
+const topHeight = px2vp(systemAvoid.topRect.height);       // status bar height
+const bottomHeight = px2vp(systemAvoid.bottomRect.height);  // navigation bar height
+
+// Listen for changes (e.g. split screen, fold/unfold)
+win.on('avoidAreaChange', (options: window.AvoidAreaOptions) => {
+  if (options.type === window.AvoidAreaType.TYPE_SYSTEM) {
+    // update top/bottom padding
+  }
+});
+```
+
+### Hide/show system bars
+
+```ts
+win.setSpecificSystemBarEnabled('status', false);             // hide status bar
+win.setSpecificSystemBarEnabled('navigationIndicator', false); // hide nav indicator
+```
+
+### Status bar text color (light/dark content)
+
+```ts
+win.setWindowSystemBarProperties({
+  statusBarContentColor: '#FFFFFF',   // white text for dark backgrounds
+});
+```
+
+## Common list operations (列表常用操作)
+
+### Swipe-to-delete (left swipe action)
+
+```ts
+ListItem() { /* content */ }
+  .swipeAction({
+    end: {
+      builder: () => {
+        Button('Delete').backgroundColor(Color.Red)
+          .onClick(() => {
+            animateTo({ duration: 300 }, () => {
+              this.dataList.splice(index, 1);
+            });
+          })
+      },
+      actionAreaDistance: 56,
+    },
+    edgeEffect: SwipeEdgeEffect.Spring,
+  })
+```
+
+### Drag reorder
+
+```ts
+List() {
+  ForEach(this.dataList, (item: string, index: number) => {
+    ListItem() { Text(item) }
+  })
+}
+.onItemDragStart((event: ItemDragInfo, itemIndex: number) => {
+  this.dragIndex = itemIndex;
+})
+.onItemDragMove((event: ItemDragInfo, itemIndex: number, insertIndex: number) => {
+  animateTo({ duration: 200 }, () => {
+    const tmp = this.dataList.splice(this.dragIndex, 1);
+    this.dataList.splice(insertIndex, 0, tmp[0]);
+    this.dragIndex = insertIndex;
+  });
+})
+```
+
+### Pull-down refresh
+
+```ts
+Refresh({ refreshing: $$this.isRefreshing }) {
+  List() { /* items */ }
+}
+.onRefreshing(() => {
+  // fetch new data...
+  this.isRefreshing = false;
+})
+```
+
+### Scroll to bottom (chat-style)
+
+```ts
+const scroller = new Scroller();
+List({ scroller }) { /* items */ }
+
+// After new message:
+scroller.scrollEdge(Edge.Bottom);
+// Or scroll to specific index:
+scroller.scrollToIndex(this.messages.length - 1);
+```
+
+### Keep scroll position on data insert (LazyForEach)
+
+```ts
+List() { LazyForEach(this.dataSource, ...) }
+  .maintainVisibleContentPosition(true)   // new items at top don't shift visible content
+```
