@@ -1354,3 +1354,355 @@ Portal: https://developer.huawei.com/consumer/cn/codelabsPortal/serviceTypes
 - Release overview (6.0): https://developer.huawei.com/consumer/cn/doc/harmonyos-releases/overview-600
 - StateStore best practice: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-global-state-management-state-store
 - ArkCompiler: https://developer.huawei.com/consumer/cn/arkcompiler
+
+## API 21 (SDK 6.0.1) — confirmed compile errors and fixes
+
+These errors were verified against a real Mate 70 Pro build. All entries below caused `ArkTS Compiler Error` at `assembleDevHqf`.
+
+### `DataChangeListener` requires both new and deprecated method names
+
+In API 21, any class that `implements DataChangeListener` must include ALL of:
+```ts
+// New names (current)
+onDataReloaded(): void
+onDataAdd(index: number): void
+onDataDelete(index: number): void
+onDataChange(index: number): void
+onDataMove(from: number, to: number): void
+// Deprecated aliases — still required by the interface in API 21
+onDataAdded(index: number): void
+onDataDeleted(index: number): void
+onDataChanged(index: number): void
+onDataMoved(from: number, to: number): void
+onDatasetChange(dataOperations: DataOperation[]): void
+```
+This applies to every class including test stubs (`NoopListener`, etc).
+
+### `notificationManager.addSlot()` — pass `SlotType`, not `NotificationSlot`
+
+```ts
+// ❌ API 9 style
+await notificationManager.addSlot({ type: SlotType.SOCIAL_COMMUNICATION, desc: '...' })
+// ✅ API 12+ style
+await notificationManager.addSlot(notificationManager.SlotType.SOCIAL_COMMUNICATION)
+```
+
+Also: always annotate the constant explicitly to prevent type narrowing to literal type:
+```ts
+// ❌ infers as SlotType.SOCIAL_COMMUNICATION — not assignable to SlotType
+const SLOT_ID = notificationManager.SlotType.SOCIAL_COMMUNICATION
+// ✅
+const SLOT_ID: notificationManager.SlotType = notificationManager.SlotType.SOCIAL_COMMUNICATION
+```
+
+### `NotificationRequest.slotType` — incompatible `SlotType` modules
+
+`NotificationRequest.slotType` is typed as `@ohos.notification.SlotType` (old module), while `notificationManager.SlotType` is from `@ohos.notificationManager` (new module). They are nominally different types — assigning new to old is a compile error. **Just omit `slotType`** (it is optional):
+```ts
+const request: notificationManager.NotificationRequest = {
+  id: NOTIFICATION_ID,
+  // slotType omitted — routes to the slot created by addSlot() automatically
+  content: { ... }
+}
+```
+`NotificationSlotLevel` does not exist on `notificationManager` in API 21 — remove any usage.
+
+### `Permissions` type — `@ohos.bundleManager` not importable
+
+`import type { Permissions } from '@ohos.bundleManager'` fails with "Cannot find module". `bundleManager` is accessible only via `@kit.AbilityKit`. Workaround: declare a local subset type whose values are all valid `Permissions` literals:
+```ts
+// ✅ subtype of Permissions — assignable to the SDK's Permissions parameter
+type AppPermission = 'ohos.permission.CAMERA' | 'ohos.permission.APPROXIMATELY_LOCATION'
+
+async function hasPermission(name: AppPermission): Promise<boolean> {
+  const atManager = abilityAccessCtrl.createAtManager()
+  const bundleInfo = await bundleManager.getBundleInfoForSelf(
+    bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION)
+  const status = atManager.checkAccessTokenSync(bundleInfo.appInfo.accessTokenId, name)
+  return status === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED
+}
+```
+
+### `requestPermissionsFromUser` — `void & Promise` overload intersection
+
+The function has both a callback overload (returns `void`) and a Promise overload (returns `Promise<PermissionRequestResult>`). TypeScript sometimes intersects them to `void & Promise<…>`, causing `.authResults` to not exist. Additionally, `abilityAccessCtrl.PermissionRequestResult` is **not exported** from the namespace in API 21.
+
+Fix: declare the result interface locally and cast:
+```ts
+interface PermResult {
+  authResults: abilityAccessCtrl.GrantStatus[]
+}
+
+async function requestPermission(ctx: common.UIAbilityContext, name: AppPermission): Promise<boolean> {
+  const atManager = abilityAccessCtrl.createAtManager()
+  const result = await (atManager.requestPermissionsFromUser(ctx, [name]) as Promise<PermResult>)
+  return result.authResults[0] === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED
+}
+```
+
+### `getContext(this)` is deprecated
+
+Replace in all component methods:
+```ts
+// ❌
+const ctx = getContext(this) as common.UIAbilityContext
+// ✅
+const ctx = this.getUIContext().getHostContext() as common.UIAbilityContext
+```
+Module-level (non-component) functions must receive `ctx` as a parameter instead.
+
+## Multi-device / foldable screen adaptation (API 21)
+
+### Breakpoint detection
+
+```ts
+import { display } from '@kit.ArkUI'
+
+export const BP_SM = 'sm'   // < 600 vp  — phone portrait
+export const BP_MD = 'md'   // < 840 vp  — phone landscape / small tablet
+export const BP_LG = 'lg'   // >= 840 vp — large tablet / foldable unfolded
+
+export function getBreakpoint(): string {
+  try {
+    const d = display.getDefaultDisplaySync()
+    const widthVp = d.width / d.densityPixels
+    if (widthVp < 600) return BP_SM
+    if (widthVp < 840) return BP_MD
+    return BP_LG
+  } catch (e) {
+    return BP_SM
+  }
+}
+```
+
+### Foldable screen — listen for fold/unfold events
+
+```ts
+// display.on callback receives (id: number) — NOT empty params
+private displayListener: (id: number) => void = (_id: number) => {
+  this.breakpoint = getBreakpoint()
+}
+
+aboutToAppear(): void {
+  this.breakpoint = getBreakpoint()
+  display.on('change', this.displayListener)
+}
+
+aboutToDisappear(): void {
+  display.off('change', this.displayListener)
+}
+```
+
+### Responsive layout switching (if/else, not .visibility)
+
+Always use `if/else` to switch between phone and tablet layouts. `.visibility(Visibility.None)` hides but still lays out — wastes resources and can cause measurement bugs.
+
+```ts
+if (this.breakpoint === BP_SM) {
+  // Phone: single-column List + LazyForEach
+  List({ space: 8 }) { LazyForEach(...) }
+} else {
+  // Tablet/foldable: GridRow with responsive columns
+  Scroll() {
+    GridRow({
+      columns: { sm: 1, md: 2, lg: 3 },
+      gutter: { x: 12, y: 12 },
+      breakpoints: { value: ['600vp', '840vp'] }
+    }) {
+      ForEach(this.gridItems, (item) => { GridCol() { MyCard({ record: item }) } })
+    }
+  }
+}
+```
+
+### `GridRow`/`GridCol` does not support `LazyForEach`
+
+`GridRow`/`GridCol` is a responsive layout container, not a lazy loader. Use `ForEach` inside it. To keep the grid reactive to data changes, maintain a `@State gridItems: T[]` that is updated via a `DataChangeListener`:
+
+```ts
+class GridRefreshListener implements DataChangeListener {
+  private updateFn: () => void
+  constructor(fn: () => void) { this.updateFn = fn }
+  // Must implement ALL methods — see API 21 DataChangeListener note above
+  onDataReloaded(): void { this.updateFn() }
+  onDataAdd(_i: number): void { this.updateFn() }
+  onDataAdded(_i: number): void { this.updateFn() }
+  // ... all other methods
+  onDataChange(_i: number): void { /* @ObjectLink handles per-item updates */ }
+  onDataChanged(_i: number): void { }
+}
+
+// In @Entry @Component:
+@State gridItems: MyRecord[] = []
+private gridListener = new GridRefreshListener(() => {
+  this.gridItems = [...this.dataSource.getAllData()]
+})
+aboutToAppear() { this.dataSource.registerDataChangeListener(this.gridListener) }
+aboutToDisappear() { this.dataSource.unregisterDataChangeListener(this.gridListener) }
+```
+
+### Share breakpoint via `@Provide`/`@Consume`
+
+Declare in the `@Entry` root, consume in any `NavDestination` child:
+```ts
+// Root
+@Provide('breakpoint') breakpoint: string = BP_SM
+
+// Detail page (NavDestination)
+@Consume('breakpoint') breakpoint: string
+```
+`@Provide`/`@Consume` works across `Navigation`/`NavDestination` because they are in the same component subtree.
+
+## Location Kit (geoLocationManager)
+
+```ts
+import { geoLocationManager } from '@kit.LocationKit'
+
+// Permission required: ohos.permission.APPROXIMATELY_LOCATION (user_grant)
+// module.json5: reason + usedScene required
+
+const pos = await geoLocationManager.getCurrentLocation({
+  priority: geoLocationManager.LocationRequestPriority.FIRST_FIX,
+  scenario: geoLocationManager.LocationRequestScenario.UNSET,
+  timeoutMs: 10000
+})
+
+const addresses = await geoLocationManager.getAddressesFromLocation({
+  latitude: pos.latitude,
+  longitude: pos.longitude,
+  maxItems: 1
+})
+
+// Build readable location string from GeoAddress fields:
+// administrativeArea (省) → subAdministrativeArea (市) → locality (区) → subLocality → placeName
+```
+
+## Notification Kit (notificationManager)
+
+```ts
+import { notificationManager } from '@kit.NotificationKit'
+
+// 1. Create slot (call once at app init)
+await notificationManager.addSlot(notificationManager.SlotType.SOCIAL_COMMUNICATION)
+
+// 2. Check and request notification enable
+const enabled = await notificationManager.isNotificationEnabled()
+if (!enabled) await notificationManager.requestEnableNotification()  // deprecated but functional
+
+// 3. Publish
+const request: notificationManager.NotificationRequest = {
+  id: 1001,
+  // OMIT slotType — see API 21 type mismatch note above
+  content: {
+    notificationContentType: notificationManager.ContentType.NOTIFICATION_CONTENT_BASIC_TEXT,
+    normal: { title: '标题', text: '正文', additionalText: '副文本' }
+  },
+  deliveryTime: Date.now(),
+  showDeliveryTime: true,
+  tapDismissed: true
+}
+await notificationManager.publish(request)
+
+// 4. Cancel
+await notificationManager.cancel(1001)
+```
+
+## relationalStore (SQLite)
+
+```ts
+import { relationalStore } from '@kit.ArkData'
+import { common } from '@kit.AbilityKit'
+
+// Init (call in aboutToAppear / UIAbility.onCreate)
+const store = await relationalStore.getRdbStore(ctx, {
+  name: 'my_db.db',
+  securityLevel: relationalStore.SecurityLevel.S1
+})
+await store.executeSql('CREATE TABLE IF NOT EXISTS records (...)')
+
+// Insert
+const values: relationalStore.ValuesBucket = { id: '1', title: 'Hello' }
+await store.insert('records', values)
+
+// Query (ordered)
+const predicates = new relationalStore.RdbPredicates('records')
+predicates.orderByDesc('timestamp')
+const rs = await store.query(predicates, ['id', 'title', 'timestamp'])
+while (rs.goToNextRow()) {
+  const id = rs.getString(rs.getColumnIndex('id'))
+}
+rs.close()
+
+// Update
+const predicates2 = new relationalStore.RdbPredicates('records')
+predicates2.equalTo('id', '1')
+await store.update({ title: 'Updated' }, predicates2)
+
+// Delete
+const predicates3 = new relationalStore.RdbPredicates('records')
+predicates3.equalTo('id', '1')
+await store.delete(predicates3)
+```
+
+## preferences (key-value settings)
+
+```ts
+import { preferences } from '@kit.ArkData'
+
+const store = await preferences.getPreferences(ctx, 'user_settings')
+// Read (with default)
+const val = (await store.get('sort_order', 'time_desc')) as string
+// Write + flush
+await store.put('sort_order', 'time_asc')
+await store.flush()
+```
+
+## UiTest — common patterns (arkxtest)
+
+```ts
+import { Driver, ON, Component } from '@ohos.UiTest'
+import AbilityDelegatorRegistry from '@ohos.app.ability.abilityDelegatorRegistry'
+
+const DELEGATOR = AbilityDelegatorRegistry.getAbilityDelegator()
+
+// Launch app before tests
+beforeAll(async (done: Function) => {
+  await DELEGATOR.startAbility({ bundleName: 'com.example.app', abilityName: 'EntryAbility' })
+  await new Promise(r => setTimeout(r, 2000))  // wait for UI to render
+  done()
+})
+
+it('example', 0, async (done: Function) => {
+  const driver = Driver.create()
+  
+  // Find by text / type / content description
+  const btn = await driver.findComponent(ON.text('发布'))
+  const input = await driver.findComponent(ON.type('TextInput'))
+  const items = await driver.findComponents(ON.type('SymbolGlyph'))
+  
+  // Actions — ALL must be awaited
+  await btn.click()
+  await input.inputText('hello')
+  
+  // Wait after state-changing actions
+  await new Promise(r => setTimeout(r, 800))
+  
+  // Component refs become stale after state changes — re-find
+  const btnAfter = await driver.findComponent(ON.text('发布'))
+  
+  // Get bounds for position-based selection
+  const bounds = await btn.getBounds()  // { top, left, right, bottom }
+  
+  // Navigate back
+  await driver.pressBack()
+  
+  done()
+})
+```
+
+Key rules:
+- Every UiTest API call inside `it()` must be `await`ed
+- After any click/input that changes state, component references may be stale — always re-`findComponent`
+- Tests only run on real device or emulator — **Previewer does not support UiTest**
+- `Driver.create()` fresh per `it` block (don't share across tests)
+- Use `sleep` / `setTimeout` after navigation to let the new page render before asserting
