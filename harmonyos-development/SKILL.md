@@ -361,57 +361,90 @@ this.getUIContext()?.animateTo({ duration: 300 }, () => { this.isExpanded = !thi
 
 ### HarmonyOS 6.0 visual effects (沉浸光感视效 / 液态玻璃)
 
-HarmonyOS 6.0 introduces system-level "Immersive Light Perception" visual effects (commonly called "Liquid Glass"). These are primarily system UI features (Control Center, Notifications) but developers can achieve similar effects through ArkUI attributes.
+HarmonyOS 6.0 (API 23) introduces system-level "Immersive Light Perception" visual effects. Users enable via Settings → Desktop & Personalization → Immersive Light Effect (强/均衡/弱). Developers achieve similar effects through these ArkUI attributes:
 
-**systemMaterialEffect (HDS material system):**
-```ts
-// Apply adaptive material effect to a container (透过质感)
-Column() {
-  // content
-}
-.systemMaterialEffect({
-  materialType: hdsMaterial.MaterialType.ADAPTIVE,
-  materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
-})
-```
+**BlurStyle enum (API 9–11):**
 
-**backgroundBlurStyle (background blur):**
+| Name | Since | Level |
+|---|---|---|
+| `Thin` / `Regular` / `Thick` | API 9 | Material blur |
+| `BACKGROUND_THIN` / `BACKGROUND_REGULAR` / `BACKGROUND_THICK` / `BACKGROUND_ULTRA_THICK` | API 10 | Depth-of-field (min→max) |
+| `COMPONENT_ULTRA_THIN` / `COMPONENT_THIN` / `COMPONENT_REGULAR` / `COMPONENT_THICK` / `COMPONENT_ULTRA_THICK` | API 11 | Component-level material |
+| `NONE` | API 10 | No blur |
+
+**backgroundBlurStyle (API 9+):**
 ```ts
 Column() { /* content */ }
-  .backgroundBlurStyle(BlurStyle.Thin)        // light blur
-  // or: BlurStyle.Regular | BlurStyle.Thick | BlurStyle.BACKGROUND_THIN
-  //     BlurStyle.BACKGROUND_REGULAR | BlurStyle.BACKGROUND_THICK
-  //     BlurStyle.BACKGROUND_ULTRA_THICK
-```
-
-**foregroundBlurStyle (foreground blur):**
-```ts
-Image($r('app.media.photo'))
-  .foregroundBlurStyle(BlurStyle.Thin)
-```
-
-**backdropBlur / blur (numeric blur):**
-```ts
-Column() { /* content */ }
-  .backdropBlur(20)   // backdrop blur radius in px
-  .blur(10)           // element blur radius
-```
-
-**Point light effect:**
-```ts
-Column() { /* content */ }
-  .pointLight({
-    lightSource: { positionX: '50%', positionY: '50%', intensity: 1.0 },
-    illuminated: PointLightIlluminatedType.BORDER
+  .backgroundBlurStyle(BlurStyle.Thin, {
+    colorMode: ThemeColorMode.LIGHT,     // SYSTEM | LIGHT | DARK
+    adaptiveColor: AdaptiveColor.DEFAULT, // DEFAULT | AVERAGE
+    scale: 1.0                            // 0.0–1.0 (blur intensity)
   })
 ```
 
-**System setting:** Users enable via Settings → Desktop & Personalization → Desktop Settings → Immersive Light Effect (强/均衡/弱 three levels). App developers simulate similar effects using the attributes above.
-
-**Key imports:**
+**foregroundBlurStyle (API 10+):**
 ```ts
-import { hdsMaterial } from '@kit.ArkUI';  // or specific HDS module
+Image($r('app.media.photo'))
+  .foregroundBlurStyle(BlurStyle.Regular)
 ```
+
+**backgroundEffect (API 11+) — fine-grained control:**
+```ts
+Column() { /* content */ }
+  .backgroundEffect({
+    radius: 20,          // blur radius
+    saturation: 15,      // [0, 50] recommended
+    brightness: 0.6,     // [0, 2] recommended
+    color: '#80FFFFFF'   // mask color
+  })
+```
+
+**blur / backdropBlur (API 7+) — numeric radius:**
+```ts
+Column() { /* content */ }
+  .backdropBlur(20, { grayscale: [30, 50] })  // background blur
+  .blur(10)                                    // foreground blur
+```
+
+**backgroundBrightness (API 12+):**
+```ts
+Column() { /* content */ }
+  .backgroundBrightness({ rate: 0.5, lightUpDegree: 0.2 })
+```
+
+**Visual effect filters (API 12+):**
+```ts
+import { uiEffect } from '@kit.ArkGraphics2D';
+
+const blurFilter = uiEffect.createFilter().blur(10);
+Column() { /* content */ }
+  .backgroundFilter(blurFilter)    // background filter
+  .foregroundFilter(blurFilter)    // content filter
+```
+
+**pointLight (API 11+, System API only — NOT available for third-party apps):**
+```ts
+// System apps only! Supports: Image, Column, Flex, Row, Stack, Button, Toggle
+Flex()
+  .pointLight({
+    lightSource: { positionX: '50%', positionY: '50%', positionZ: 80, intensity: 2, color: Color.White },
+    illuminated: IlluminatedType.BORDER,  // NONE | BORDER | CONTENT | BORDER_CONTENT
+    bloom: 0.5                            // luminous intensity 0–1
+  })
+```
+Up to 12 light sources can illuminate a single component. HarmonyOS 6.0 adds dual-edge flow light and UV background flow light effects.
+
+**systemMaterialEffect (HDS layer, API 23+, HarmonyOS-only SDK):**
+```ts
+import { hdsMaterial } from '@kit.ArkUI';
+
+Column() { /* content */ }
+  .systemMaterialEffect({
+    materialType: hdsMaterial.MaterialType.ADAPTIVE,
+    materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+  })
+```
+Note: `hdsMaterial` is part of the closed-source HarmonyOS Design System (HDS), not OpenHarmony. Requires HarmonyOS 6.0 SDK (API 23+).
 
 ### State-management decorators
 
