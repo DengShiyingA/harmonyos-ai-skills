@@ -20,9 +20,10 @@ Covers HarmonyOS NEXT (API 12+) native app development — the Huawei mobile OS 
 | Item | Value |
 |---|---|
 | OS | HarmonyOS NEXT (Pure HarmonyOS, AOSP-free) |
-| Language | **ArkTS** (primary), C/C++ via NAPI, limited JS/TS |
+| Language | **ArkTS** (primary), **Cangjie** (beta), C/C++ via NAPI |
 | UI framework | **ArkUI** declarative (ArkUI-X for cross-platform) |
-| Runtime | Ark Runtime, AOT-compiled by Ark Compiler |
+| Compiler | **ArkCompiler** — AOT to native machine code; LiteActor concurrency |
+| Package manager | **ohpm** — `oh-package.json5`; registry at DevEco Service (OHPM Central) |
 | IDE | **DevEco Studio** (IntelliJ-based) |
 | App model | **Stage model** (FA model is legacy — don't use in new apps) |
 | Packaging | HAP (entry/feature), HSP (shared package), HAR (static archive) |
@@ -238,14 +239,135 @@ The older `router` module (`@ohos.router`) still works but `Navigation` + `NavPa
 
 ```ts
 import { UIAbility, Want, common, abilityAccessCtrl } from '@kit.AbilityKit';
-import { window, display, promptAction, router } from '@kit.ArkUI';
+import { window, display, promptAction } from '@kit.ArkUI';
 import { http, webSocket, connection } from '@kit.NetworkKit';
-import { media, image, camera } from '@kit.MediaLibraryKit' | '@kit.ImageKit' | '@kit.CameraKit';
+import { photoAccessHelper } from '@kit.MediaLibraryKit';   // photo/video picker
+import { fileIo as fs } from '@kit.CoreFileKit';
 import { geoLocationManager } from '@kit.LocationKit';
 import { relationalStore, preferences, distributedKVStore } from '@kit.ArkData';
-import { fileIo as fs, picker } from '@kit.CoreFileKit';
 import { notificationManager } from '@kit.NotificationKit';
-import { hiAIFoundation } from '@kit.HiAIVisionKit';
+import { speechRecognizer } from '@kit.CoreSpeechKit';       // ASR / TTS
+import { hilog } from '@kit.PerformanceAnalysisKit';
+```
+
+### Full Kit catalog — official SDK categories (developer.huawei.com/consumer/cn/sdk/)
+
+**应用框架 Application Framework**
+
+| Kit | Import key | Purpose |
+|---|---|---|
+| Ability Kit | `AbilityKit` | UIAbility, ExtensionAbility, Want, context, routing |
+| Accessibility Kit | `AccessibilityKit` | Screen reader, universal design, a11y services |
+| ArkData | `ArkData` | relationalStore, preferences, distributedKVStore |
+| ArkTS | — | Language spec & Ark compiler tooling |
+| ArkUI | `ArkUI` | window, display, promptAction, Navigation, components |
+| ArkWeb | `ArkWeb` | WebView / Web component embedding |
+| Background Tasks Kit | `BackgroundTasksKit` | Deferred/scheduled background work, transient tasks |
+| Core File Kit | `CoreFileKit` | fileIo, picker, sandbox paths |
+| Form Kit | `FormKit` | FormExtensionAbility, home-screen service cards/widgets |
+| IME Kit | `IMEKit` | Input method engine development |
+| IPC Kit | `IPCKit` | Inter-process communication (Parcel, RemoteObject) |
+| Localization Kit | `LocalizationKit` | i18n, l10n, RTL, pseudo-localization |
+
+**应用服务 Application Services**
+
+| Kit | Import key | Purpose |
+|---|---|---|
+| Account Kit | `AccountKit` | One-click Huawei ID login, OAuth 2.0 |
+| Ads Kit | `AdsKit` | Advertising SDK (banner, native, interstitial) |
+| App Linking Kit | `AppLinkingKit` | Deep links, deferred deep links |
+| Calendar Kit | `CalendarKit` | Calendar events, reminders |
+| Contacts Kit | `ContactsKit` | Contact read/write/search |
+| IAP Kit | `IAPKit` | In-app purchases (consumable, non-consumable, subscription) |
+| Live View Kit | `LiveViewKit` | Live activities on lock screen / notification center |
+| Location Kit | `LocationKit` | geoLocationManager, geofencing, geocoding |
+| Map Kit | `MapKit` | Huawei Maps SDK, routing, place search |
+| Notification Kit | `NotificationKit` | Local + push notifications, badges |
+| Payment Kit | `PaymentKit` | Huawei Pay transaction processing |
+| Push Kit | `PushKit` | Push notification delivery service |
+| Scan Kit | `ScanKit` | QR/barcode scanning |
+| Share Kit | `ShareKit` | Cross-app content sharing |
+
+**系统 System**
+
+| Kit | Import key | Purpose |
+|---|---|---|
+| Asset Store Kit | `AssetStoreKit` | Secure credential/secret storage |
+| Basic Services Kit | `BasicServicesKit` | Battery, vibration, thermal, brightness, clipboard |
+| Connectivity Kit | `ConnectivityKit` | Bluetooth, Wi-Fi, NFC, USB, hotspot |
+| Crypto Architecture Kit | `CryptoArchitectureKit` | Encryption, key management, certificates |
+| Distributed Service Kit | `DistributedServiceKit` | deviceManager, cross-device discovery |
+
+**媒体 Media**
+
+| Kit | Import key | Purpose |
+|---|---|---|
+| Audio Kit | `AudioKit` | Audio playback, recording, routing, focus |
+| AVCodec Kit | `AVCodecKit` | Hardware-accelerated encode/decode (H.264, H.265, AAC…) |
+| Camera Kit | `CameraKit` | Camera preview, photo capture, video recording |
+| Image Kit | `ImageKit` | Image decoding, transformation, EXIF |
+| Media Kit | `MediaKit` | AVPlayer, AVRecorder (unified playback/recording) |
+| Media Library Kit | `MediaLibraryKit` | photoAccessHelper, media library CRUD |
+| Scan Kit | `ScanKit` | QR/barcode scanning |
+
+**图形 Graphics**
+
+| Kit | Import key | Purpose |
+|---|---|---|
+| ArkGraphics 2D | `ArkGraphics2D` | 2D Canvas drawing, effects, blur, shadow |
+| ArkGraphics 3D | `ArkGraphics3D` | 3D scene graph, glTF rendering |
+| XComponent | (ArkUI built-in) | Native OpenGL ES / Vulkan surface via NAPI |
+
+**AI**
+
+| Kit | Import key | Purpose |
+|---|---|---|
+| Core Speech Kit | `CoreSpeechKit` | On-device ASR / TTS engine |
+| Core Vision Kit | `CoreVisionKit` | OCR, face detection, image segmentation, super-resolution |
+| Intents Kit | `IntentsKit` | Intent recognition (30+ domains, 60+ built-in intents) |
+| MindSpore Lite | `MindSporeLiteKit` | Edge model inference (Caffe/TF/ONNX/MindIR) |
+| Natural Language Kit | `NaturalLanguageKit` | Word segmentation, NER, keyword extraction |
+
+**Performance & DevTools**
+
+| Kit | Import key | Purpose |
+|---|---|---|
+| Performance Analysis Kit | `PerformanceAnalysisKit` | hilog, HiAppEvent, crash analysis |
+
+### Photo/video picker (correct API — `picker.PhotoViewPicker` is deprecated)
+
+```ts
+import { photoAccessHelper } from '@kit.MediaLibraryKit';
+
+const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(context);
+const picker = new photoAccessHelper.PhotoViewPicker();
+const result = await picker.select({
+  MIMEType: photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE,
+  maxSelectNumber: 9
+});
+const uris: string[] = result.photoUris;
+```
+
+### CoreSpeechKit — ASR audio format requirements
+
+```ts
+import { speechRecognizer } from '@kit.CoreSpeechKit';
+
+const engine = await speechRecognizer.createEngine({
+  language: 'zh-CN',
+  online: 0   // 0=on-device, 1=cloud
+});
+// Audio MUST be: PCM, 16kHz, mono, 16-bit
+// Chunk size: 640 or 1280 bytes, write every 20ms or 40ms
+engine.startListening({
+  sessionId: `asr_${Date.now()}`,
+  audioInfo: {
+    audioType: 'pcm',
+    sampleRate: 16000,
+    soundChannel: 1,
+    sampleBit: 16
+  }
+});
 ```
 
 ### HTTP request example
@@ -328,6 +450,144 @@ The official samples repo is organized by the following **10 official categories
 2. Narrow by the specific Kit (AbilityKit, MediaKit, HiAIVisionKit, LocationKit, etc.)
 3. Match by API name or scenario (e.g. "service card" → 应用框架开发 + FormExtensionAbility)
 
+## Multi-device (一多) responsive layout
+
+HarmonyOS supports a single codebase across phone, tablet, 2-in-1, watch, smartscreen, and automotive. Use breakpoints in **vp** (not px).
+
+### Breakpoints
+
+| Breakpoint | vp width | Target |
+|---|---|---|
+| xs | < 320 | watch |
+| sm | 320–600 | phone portrait |
+| md | 600–840 | phone landscape / small tablet |
+| lg | 840–1440 | tablet / 2-in-1 |
+| xl | ≥ 1440 | large screen |
+
+**Always convert px → vp before comparing:**
+```ts
+import { display } from '@kit.ArkUI';
+function getBreakpoint(): string {
+  const dm = display.getDefaultDisplaySync();
+  const w = dm.width / dm.densityPixels; // vp
+  if (w < 600) return 'sm';
+  if (w < 840) return 'md';
+  return 'lg';
+}
+```
+
+### GridRow / GridCol (recommended for responsive grids)
+
+```ts
+GridRow({ columns: { sm: 4, md: 8, lg: 12 }, gutter: { x: 12 } }) {
+  GridCol({ span: { sm: 4, md: 4, lg: 6 } }) { LeftPanel() }
+  GridCol({ span: { sm: 4, md: 4, lg: 6 } }) { RightPanel() }
+}
+```
+
+### Foldable / hover mode
+Listen for display change and re-check breakpoint:
+```ts
+display.on('change', (_id: number) => { this.bp = getBreakpoint(); });
+display.off('change');
+```
+
+## sys.symbol — icon glyph system
+
+HarmonyOS Symbol is a 1500+ vector icon font with multi-layer color and 7 animation types.
+
+```ts
+SymbolGlyph($r('sys.symbol.bell_fill'))
+  .fontSize(24)
+  .fontColor([Color.Blue, Color.Green])
+  .symbolEffect(new BounceSymbolEffect(EffectScope.WHOLE), true)
+```
+
+**Confirmed working names** (SDK 6.0.1): `xmark` · `plus` · `minus` · `checkmark` · `chevron_right` · `chevron_left` · `star` · `star_fill` · `bell` · `bell_fill` · `doc` · `video` · `mic` · `mic_fill` · `clock` · `trash` · `pencil` · `image` · `person`
+
+**Names that do NOT exist** (common mistakes): `photo` · `doc_richtext` · `sparkles` · `checklist`
+
+Find valid names: https://developer.huawei.com/consumer/cn/design/harmonyos-symbol
+
+## DevEco Studio 6.x — Project Setup
+
+DevEco Studio 6.x requires **additional Hvigor infrastructure files**. Without them the IDE shows "工程结构及配置需要升级".
+
+### hvigorfile.ts (root + each module)
+
+```ts
+// root
+import { appTasks } from '@ohos/hvigor-ohos-plugin';
+export default { system: appTasks, plugins:[] }
+
+// entry/hvigorfile.ts
+import { hapTasks } from '@ohos/hvigor-ohos-plugin';
+export default { system: hapTasks, plugins:[] }
+```
+
+### hvigor/wrapper/hvigor-config.json5
+
+```json5
+{
+  "hvigorVersion": "5.0.0",
+  "dependencies": {
+    "@ohos/hvigor-ohos-plugin": "5.0.0"
+  }
+}
+```
+
+### build-profile.json5 — SDK version placement
+
+SDK versions go in **one place only** — either under `app` OR inside each `product`, not both. Mixing them causes "Sync Failed".
+
+**Recommended workflow:** Always let DevEco Studio generate the scaffold (`新建项目` → Empty Ability), then copy your source files in.
+
+## ArkTS strict-mode compiler errors (SDK 6.0.1)
+
+### No object literals as types
+```ts
+// ❌
+parseOutput(): { text: string; tags: string[] } { ... }
+// ✅
+interface ParsedOutput { text: string; tags: string[]; }
+parseOutput(): ParsedOutput { ... }
+```
+
+### No `any` / `unknown`
+```ts
+const task = JSON.parse(rawStr) as AgentTask;  // ✅ cast immediately
+```
+
+### `navDestination` requires a `@Builder` function reference
+```ts
+// ❌ inline lambda
+.navDestination((name, param) => { if (name==='X') MyPage() })
+// ✅ top-level @Builder
+@Builder function PageRouter(name: string) { if (name==='X') MyPage() }
+Navigation(stack) { ... }.navDestination(PageRouter)
+```
+
+### `@Entry` build() root must be a container
+Wrap in `Stack()`, `Column()`, or `Row()` — a custom component alone is not a container.
+
+### `display.width` is pixels, not vp
+```ts
+function isTablet(): boolean {
+  const dm = display.getDefaultDisplaySync();
+  return (dm.width / dm.densityPixels) >= 840;
+}
+```
+
+### All user_grant permissions need `reason` + `usedScene`
+```json5
+{
+  "name": "ohos.permission.READ_MEDIA",
+  "reason": "$string:permission_media_reason",
+  "usedScene": { "abilities": ["EntryAbility"], "when": "inuse" }
+}
+```
+`INTERNET` is system_grant — no extra fields needed.
+
 ## Common gotchas
 
 1. **Don't mix FA and Stage models** — FA is legacy; HarmonyOS NEXT only supports Stage.
@@ -341,12 +601,58 @@ The official samples repo is organized by the following **10 official categories
 9. **ohpm** is the package manager (similar to npm) — dependencies live in `oh-package.json5`.
 10. **Preview on device** — DevEco Previewer doesn't fully simulate; always test on real HarmonyOS device or emulator.
 
+## 仓颉 (Cangjie) — alternative language (Beta)
+
+| | ArkTS | Cangjie |
+|---|---|---|
+| Status | **Production** (use this now) | **Beta / developer preview** |
+| Base | TypeScript superset | New language (Huawei-designed) |
+| Key feature | Familiar TS syntax, strict AOT typing | Concurrent GC, embedded AgentDSL for AI |
+| Use for | All current HarmonyOS NEXT apps | Experimentation only until stable |
+
+## ArkCompiler — runtime details
+
+- **AOT mode** — static type info generates optimized native machine code; no JIT warm-up
+- **LiteActor concurrency** — lightweight actor model; shared immutable objects avoid copy overhead
+- **Taskpool / Worker** — two concurrency APIs:
+  - `taskpool.execute(task)` — fire-and-forget parallel tasks (preferred)
+  - `new worker.ThreadWorker(script)` — long-lived background threads
+
+```ts
+import { taskpool } from '@kit.ArkTS';
+
+@Concurrent
+function heavyCalc(n: number): number { return n * n; }
+
+const result = await taskpool.execute(heavyCalc, 42);
+```
+
+## OHPM — package manager
+
+```bash
+ohpm install @ohos/axios          # install a library
+ohpm install                      # install all from oh-package.json5
+```
+
+**oh-package.json5 example:**
+```json5
+{
+  "name": "entry",
+  "dependencies": {
+    "@ohos/axios": "^2.0.0"
+  }
+}
+```
+
+OHPM Central Repository: https://developer.huawei.com/consumer/cn/deveco-service
+
 ## Debugging & tooling
 
 - **DevEco Studio** — primary IDE, includes emulator, previewer, profiler, HiLog viewer
 - **hdc** — Harmony Device Connector (like adb): `hdc shell`, `hdc file send`, `hdc hilog`
 - **HiLog** — logging: `hilog.info(0x0001, 'TAG', 'message %{public}s', arg)`
 - **Instruments: SmartPerf / DevEco Profiler** — CPU/GPU/memory/energy profiling
+- **DevEco Testing** — UI automation, performance testing, monkey/stress, compatibility
 
 ## Publishing
 
@@ -356,10 +662,36 @@ The official samples repo is organized by the following **10 official categories
 4. Build release HAP/APP bundle: `hvigorw assembleApp`
 5. Upload to **AppGallery Connect** for review
 
+## Best practices (official)
+
+Official best-practice docs at: https://developer.huawei.com/consumer/cn/best-practices
+
+Key topics: ArkTS高性能编程, 布局优化, 组件绘制优化, 内存分析, 功耗优化, 应用安全编码, ArkWeb安全, 自由流转/跨端迁移, NDK跨语言调用, 行业场景解决方案 (新闻阅读 / 直播连麦 / 影音娱乐)
+
 ## Useful references
 
+- Official docs home: https://developer.huawei.com/consumer/cn/doc/
+- Getting started guide: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/application-dev-guide
+- ArkTS language: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts
+- ArkTS high-perf programming: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-high-performance-programming
+- ArkUI framework: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkui
+- State management: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-state-management-overview
+- Navigation & routing: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-set-navigation-routing
+- Animations: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-use-animation
+- Concurrency: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-concurrency
+- ArkData (data mgmt): https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/data-mgmt-overview
 - Samples catalog: https://developer.huawei.com/consumer/cn/samples/
-- Official docs: https://developer.huawei.com/consumer/cn/doc/
-- ArkTS spec: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/arkts-overview-V5
-- ArkUI component reference: search "ArkUI 声明式组件"
+- SDK / Kit overview: https://developer.huawei.com/consumer/cn/sdk
+- Best practices: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-best-practices-overview
 - DevEco Studio: https://developer.huawei.com/consumer/cn/deveco-studio/
+- DevEco Testing: https://developer.huawei.com/consumer/cn/deveco-testing
+- OHPM package registry: https://developer.huawei.com/consumer/cn/deveco-service
+- Design resources: https://developer.huawei.com/consumer/cn/design/resource
+- HarmonyOS Symbol icons: https://developer.huawei.com/consumer/cn/design/harmonyos-symbol
+- Codelabs (hands-on tutorials): https://developer.huawei.com/consumer/cn/codelabsPortal/serviceTypes
+- Quick-start Codelab: https://developer.huawei.com/consumer/cn/codelabsPortal/getstarted/101718800110527001
+- Knowledge map: https://developer.huawei.com/consumer/cn/app/knowledge-map
+- AppGallery Connect: https://developer.huawei.com/consumer/cn/agconnect
+- App review policy: https://developer.huawei.com/consumer/cn/doc/app/50000
+- HarmonyOS developer certification: https://developer.huawei.com/consumer/cn/training/dev-cert-detail/101666948302721398
+- Cangjie beta signup: https://developer.huawei.com/consumer/cn/activityDetail/cangjie-beta
