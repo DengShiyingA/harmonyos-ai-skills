@@ -2224,6 +2224,22 @@ const results = await customScan.start(viewControl);
 await customScan.release();
 ```
 
+### Barcode generation
+
+```ts
+import { scanCore, generateBarcode } from '@kit.ScanKit';
+import { image } from '@kit.ImageKit';
+
+const pixelMap: image.PixelMap = await generateBarcode.createBarcode('https://example.com', {
+  scanType: scanCore.ScanType.QR_CODE,
+  height: 400,
+  width: 400
+});
+// Use pixelMap directly in Image component: Image(this.pixelMap)
+```
+
+Supports generating: QR Code, EAN-8, EAN-13, UPC-A, UPC-E, Codabar, Code 39/93/128, ITF-14, Data Matrix, PDF417, Aztec.
+
 ## Account Kit — Huawei ID login
 
 ### Configure Client ID in `module.json5`
