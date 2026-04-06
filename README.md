@@ -60,18 +60,25 @@ A skill is a chunk of domain knowledge (in Markdown) that an AI coding tool load
 
 ## What's inside the knowledge
 
-The skill teaches the AI everything needed to read, write, review, and debug HarmonyOS NEXT native apps:
+The skill teaches the AI everything needed to read, write, review, and debug HarmonyOS NEXT native apps (~1200 lines of dense, actionable knowledge):
 
-- **Language & framework** — ArkTS (strict-typed TypeScript superset), ArkUI declarative UI framework
-- **App architecture** — Stage model: UIAbility, ExtensionAbility (Service / Form / WorkScheduler / InputMethod / Wallpaper / Backup …), AbilityStage, WindowStage lifecycles
-- **State management** — every decorator: `@State`, `@Prop`, `@Link`, `@Provide`/`@Consume`, `@Observed` + `@ObjectLink`, `@Watch`, `@Builder`, `@Styles`, `@Extend`, `@StorageLink`, `@LocalStorageLink`
-- **Navigation** — modern `Navigation` + `NavPathStack` API (plus legacy `router`)
-- **HarmonyOS Kits** — Ability Kit, ArkUI, ArkGraphics, Network Kit, Media Kit, Location Kit, ArkData (Preferences / RDB / Distributed KV), CoreFileKit, NotificationKit, HiAI Vision Kit, and more
-- **Packaging** — HAP (entry/feature), HSP (shared), HAR (archive); `module.json5` / `app.json5` / `oh-package.json5` configuration
-- **Advanced features** — atomic services (原子化服务 / 元服务 / 服务卡片), cross-device continuation (流转), distributed data object, one-develop-multi-deploy (一多)
-- **Samples catalog** — the official 10-category taxonomy from [developer.huawei.com/consumer/cn/samples](https://developer.huawei.com/consumer/cn/samples/) with Kit and API mapping
-- **Gotchas** — 10 of the most common mistakes (FA-vs-Stage, arrow functions for `this`, nested object reactivity, `$r()` resource paths, `build()` must be synchronous, runtime permissions, …)
-- **Tooling & publishing** — DevEco Studio, `hvigor`, `ohpm`, `hdc`, HiLog, SmartPerf / DevEco Profiler, AppGallery Connect signing & release
+- **Language & framework** — ArkTS strictness rules, naming conventions, 10 high-performance coding rules (const, TypedArrays, sparse arrays, closures, caching), coding style guide
+- **App architecture** — Stage model: UIAbility, ExtensionAbility, AbilityStage, WindowStage lifecycles; module.json5 / app.json5 configuration
+- **ArkUI components** — component lifecycle (7 callbacks + execution order), 6 layout containers (Column/Row/Stack/Flex/RelativeContainer/List) with performance comparison, `@Reusable` component reuse pattern (69% faster)
+- **State management** — V1 decorators (`@State`, `@Prop`, `@Link`, `@Provide`/`@Consume`, `@Observed` + `@ObjectLink`, `@Watch`) + V2 decorators (`@ComponentV2`, `@Local`, `@ObservedV2` + `@Trace`, `@Monitor`) with observation depth rules and performance guidance
+- **Navigation** — `Navigation` + `NavPathStack` full API (push/pop/replace/remove/query/interception), 3 display modes, `@Builder` navDestination pattern
+- **Animation** — `animateTo()`, `.animation()`, Curve enum, spring curves, `geometryTransition` shared element transitions
+- **Performance** — `LazyForEach` with IDataSource, `cachedCount`, layout nesting rules (max 3 levels), `if/else` vs `.visibility()`, `Flex` vs `Column`/`Row`
+- **HarmonyOS Kits** — 50+ Kits across 7 categories (Application Framework, Services, System, Media, Graphics, AI, DevTools) with import keys
+- **Concurrency** — TaskPool vs Worker comparison, `@Concurrent` rules, `@Sendable` shared-heap mechanism (100x faster), Task priority/groups/delayed/periodic
+- **Stability** — crash type taxonomy (JS_ERROR/CPP_CRASH/APP_FREEZE/OOM), global error handler, HiAppEvent crash subscription
+- **Background tasks** — 4 types (transient/continuous/deferred/agent reminders), 9 background modes, frequency limits
+- **Security** — 10 coding rules, permission check/request pattern, data encryption levels (EL1–EL4)
+- **Testing** — arkxtest framework (JsUnit 16+ assertions, UiTest selectors/actions), test project structure
+- **Multi-device** — responsive breakpoints (xs/sm/md/lg/xl), GridRow/GridCol, foldable support
+- **Packaging** — HAP/HSP/HAR, atomic services, distributed features (流转)
+- **Tooling** — DevEco Studio 6.x setup (hvigor config), OHPM, ArkCompiler, Cangjie (beta)
+- **Samples & references** — 10-category sample catalog, 30+ best practice URLs by topic, 10 Codelabs, training courses, 80+ verified documentation links
 
 ---
 
@@ -316,6 +323,7 @@ Other good probes:
 ```
 harmonyos-ai-skills/
 ├─ .gitignore
+├─ LICENSE
 ├─ harmonyos-development/
 │  └─ SKILL.md                          ← Source of truth. Edit only here.
 ├─ scripts/
@@ -400,7 +408,7 @@ After editing the source file, run `./scripts/build-dist.sh` to regenerate every
 - For paste-based tools (ChatGPT, DeepSeek, …), the system prompt is per-conversation; start a **new chat** after pasting.
 
 **Rule file is too long for the tool's context limit.**
-Unlikely — `SKILL.md` is ~800 lines (~30 KB). Every listed tool accepts it. If you still hit a limit, trim sections from `dist/plain/harmonyos-knowledge.md` manually.
+Unlikely — `SKILL.md` is ~1200 lines (~45 KB). Every listed tool accepts it. If you still hit a limit, trim sections from `dist/plain/harmonyos-knowledge.md` manually.
 
 **`curl` fails with 404.**
 The branch in the URL may have moved. Check `https://github.com/DengShiyingA/harmonyos-ai-skills/branches` and update `$RAW` accordingly.
