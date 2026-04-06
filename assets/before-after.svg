@@ -1,58 +1,58 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif">
-  <rect width="1280" height="640" fill="#0d1117"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" font-family="-apple-system, 'PingFang SC', 'Söhne', 'Microsoft YaHei', sans-serif">
+  <rect width="1280" height="640" fill="#1a1714"/>
 
   <!-- Title -->
-  <text x="640" y="55" font-size="30" font-weight="700" fill="#fff" text-anchor="middle">AI 写鸿蒙代码，装不装知识包的区别</text>
+  <text x="640" y="52" font-size="26" font-weight="700" fill="#f5ebe0" text-anchor="middle" letter-spacing="0.5">AI 写鸿蒙代码，装不装知识包的区别</text>
 
   <!-- Left: Before -->
-  <rect x="30" y="85" width="590" height="500" rx="12" fill="#161b22" stroke="#f85149" stroke-width="2"/>
-  <rect x="30" y="85" width="590" height="44" rx="12" fill="#f85149"/>
-  <rect x="30" y="113" width="590" height="16" fill="#f85149"/>
-  <text x="50" y="114" font-size="18" font-weight="700" fill="#fff">  不装知识包</text>
-  <text x="580" y="114" font-size="13" fill="rgba(255,255,255,0.7)" text-anchor="end">Cursor / Copilot 默认输出</text>
+  <rect x="30" y="80" width="590" height="510" rx="16" fill="#252220" stroke="#c0584a" stroke-width="1.5"/>
+  <rect x="30" y="80" width="590" height="42" rx="16" fill="#c0584a"/>
+  <rect x="30" y="106" width="590" height="16" fill="#c0584a"/>
+  <text x="55" y="108" font-size="16" font-weight="700" fill="#fff">  不装知识包</text>
+  <text x="580" y="108" font-size="12" fill="rgba(255,255,255,0.6)" text-anchor="end">AI 默认输出</text>
 
-  <text x="50" y="165" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#8b949e">// 让 AI 写一个带状态的鸿蒙组件</text>
-  <text x="50" y="195" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#f85149">import React, { useState } from 'react';</text>
-  <text x="50" y="220" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3"></text>
-  <text x="50" y="245" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">function MyPage() {</text>
-  <text x="70" y="270" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#f85149">const [count, setCount] = useState(0);</text>
-  <text x="70" y="295" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">return (</text>
-  <text x="90" y="320" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#f85149">&lt;div onClick={() =&gt; setCount(c =&gt; c+1)}&gt;</text>
-  <text x="110" y="345" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">&lt;p&gt;{count}&lt;/p&gt;</text>
-  <text x="90" y="370" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#f85149">&lt;/div&gt;</text>
-  <text x="70" y="395" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">);</text>
-  <text x="50" y="420" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">}</text>
+  <text x="50" y="160" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#9a8e80">// 让 AI 写一个带状态的鸿蒙组件</text>
+  <text x="50" y="190" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#c0584a">import React, { useState } from 'react';</text>
+  <text x="50" y="220" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">function MyPage() {</text>
+  <text x="70" y="250" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#c0584a">const [count, setCount] = useState(0);</text>
+  <text x="70" y="280" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">return (</text>
+  <text x="90" y="310" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#c0584a">&lt;div onClick={() =&gt; setCount(c =&gt; c+1)}&gt;</text>
+  <text x="110" y="340" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">&lt;p&gt;{count}&lt;/p&gt;</text>
+  <text x="90" y="370" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#c0584a">&lt;/div&gt;</text>
+  <text x="70" y="400" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">);</text>
+  <text x="50" y="430" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">}</text>
 
-  <text x="50" y="475" font-size="14" fill="#f85149">  这是 React，不是鸿蒙</text>
-  <text x="50" y="498" font-size="14" fill="#f85149">  ArkTS 里没有 useState</text>
-  <text x="50" y="521" font-size="14" fill="#f85149">  ArkUI 也没有 &lt;div&gt; 和 JSX</text>
-  <text x="50" y="544" font-size="14" fill="#f85149">  编译直接报错，完全不能用</text>
+  <line x1="50" y1="460" x2="590" y2="460" stroke="#c0584a" stroke-width="0.5" opacity="0.3"/>
+  <text x="50" y="485" font-size="13" fill="#c0584a">  React 语法，不是鸿蒙</text>
+  <text x="50" y="507" font-size="13" fill="#c0584a">  ArkTS 里没有 useState</text>
+  <text x="50" y="529" font-size="13" fill="#c0584a">  ArkUI 没有 &lt;div&gt; 和 JSX</text>
+  <text x="50" y="551" font-size="13" fill="#c0584a">  编译报错，完全不能用</text>
 
   <!-- Right: After -->
-  <rect x="660" y="85" width="590" height="500" rx="12" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
-  <rect x="660" y="85" width="590" height="44" rx="12" fill="#3fb950"/>
-  <rect x="660" y="113" width="590" height="16" fill="#3fb950"/>
-  <text x="680" y="114" font-size="18" font-weight="700" fill="#fff">  装了知识包</text>
-  <text x="1210" y="114" font-size="13" fill="rgba(255,255,255,0.7)" text-anchor="end">知识包加持后输出</text>
+  <rect x="660" y="80" width="590" height="510" rx="16" fill="#252220" stroke="#D97757" stroke-width="1.5"/>
+  <rect x="660" y="80" width="590" height="42" rx="16" fill="#D97757"/>
+  <rect x="660" y="106" width="590" height="16" fill="#D97757"/>
+  <text x="685" y="108" font-size="16" font-weight="700" fill="#fff">  装了知识包</text>
+  <text x="1210" y="108" font-size="12" fill="rgba(255,255,255,0.6)" text-anchor="end">知识包加持</text>
 
-  <text x="680" y="165" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#8b949e">// 让 AI 写一个带状态的鸿蒙组件</text>
-  <text x="680" y="195" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#3fb950">@Entry</text>
-  <text x="680" y="220" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#3fb950">@Component</text>
-  <text x="680" y="245" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">struct MyPage {</text>
-  <text x="700" y="270" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#3fb950">@State count: number = 0;</text>
-  <text x="700" y="295" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3"></text>
-  <text x="700" y="320" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">build() {</text>
-  <text x="720" y="345" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">Column({ space: 12 }) {</text>
-  <text x="740" y="370" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#3fb950">Text(`Count: ${this.count}`)</text>
-  <text x="760" y="395" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">.fontSize(24)</text>
-  <text x="740" y="420" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">Button('Increment')</text>
-  <text x="760" y="445" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">.onClick(() =&gt; this.count++)</text>
-  <text x="720" y="470" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">}</text>
-  <text x="700" y="495" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">}</text>
-  <text x="680" y="520" font-size="15" font-family="Menlo, 'SF Mono', monospace" fill="#e6edf3">}</text>
+  <text x="680" y="160" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#9a8e80">// 让 AI 写一个带状态的鸿蒙组件</text>
+  <text x="680" y="190" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#D97757">@Entry</text>
+  <text x="680" y="220" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#D97757">@Component</text>
+  <text x="680" y="250" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">struct MyPage {</text>
+  <text x="700" y="280" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#E8C872">@State count: number = 0;</text>
+  <text x="700" y="310" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">build() {</text>
+  <text x="720" y="340" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">Column({ space: 12 }) {</text>
+  <text x="740" y="370" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#D97757">Text(`Count: ${this.count}`)</text>
+  <text x="760" y="400" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">.fontSize(24)</text>
+  <text x="740" y="430" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">Button('Increment')</text>
+  <text x="760" y="460" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">.onClick(() =&gt; this.count++)</text>
+  <text x="720" y="490" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">}</text>
+  <text x="700" y="520" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">}</text>
+  <text x="680" y="550" font-size="14" font-family="Menlo, 'SF Mono', monospace" fill="#e8ddd0">}</text>
 
-  <text x="680" y="560" font-size="14" fill="#3fb950">  地道的 ArkTS + ArkUI 声明式写法，编译通过</text>
+  <line x1="680" y1="565" x2="1220" y2="565" stroke="#D97757" stroke-width="0.5" opacity="0.3"/>
+  <text x="680" y="585" font-size="13" fill="#D97757">  地道的 ArkTS + ArkUI 声明式写法，编译通过</text>
 
   <!-- Footer -->
-  <text x="640" y="620" font-size="16" font-weight="500" fill="#58a6ff" text-anchor="middle">github.com/DengShiyingA/harmonyos-ai-skills</text>
+  <text x="640" y="628" font-size="14" font-weight="500" fill="#D97757" text-anchor="middle" opacity="0.7">github.com/DengShiyingA/harmonyos-ai-skills</text>
 </svg>
