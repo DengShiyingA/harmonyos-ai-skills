@@ -2455,3 +2455,157 @@ Use `continueType` in `module.json5` to link different Abilities across devices:
 - Wi-Fi + Bluetooth enabled (or "Multi-device Collaboration Enhanced" enabled)
 - "Settings → Multi-device Collaboration → Continuation" enabled
 - App installed on both devices
+
+## Push Kit — push notifications
+
+### Get Push Token
+
+Call in `onCreate()` of your UIAbility. Token identifies device+app for push messages.
+
+```ts
+import { pushService } from '@kit.PushKit';
+
+// In EntryAbility.onCreate()
+pushService.getToken().then((token: string) => {
+  console.info('Push token:', token);
+  // Upload token to your app server for sending push messages
+}).catch((err: BusinessError) => {
+  console.error('Failed to get push token:', err.code, err.message);
+});
+```
+
+**Prerequisites**: Enable Push Service in AGC console first, otherwise `getToken()` returns error 1000900010.
+
+Token changes on: app reinstall, factory reset, `deleteToken()` + re-`getToken()`. Always call `getToken()` on each app launch to keep server-side token fresh.
+
+### Receive push messages (module.json5)
+
+Configure a UIAbility with `action.ohos.push.listener` to receive token updates and push data:
+
+```json5
+"skills": [{ "actions": ["action.ohos.push.listener"] }]
+```
+
+Push Kit supports: notification messages, voice broadcast, card refresh, background messages, live view, in-app call messages.
+
+## AVSession Kit — media playback control (required for background audio)
+
+**Critical**: All apps playing audio/video in background **must** create an AVSession. Without it, the system will **force-pause** your audio when the app goes to background.
+
+### Create and activate session
+
+```ts
+import { avSession as AVSessionManager } from '@kit.AVSessionKit';
+
+// Create session — type: 'audio' | 'video' | 'voice_call'
+const session = await AVSessionManager.createAVSession(context, 'MyPlayer', 'audio');
+
+// Set metadata (required — without it, playback controls won't appear)
+await session.setAVMetadata({
+  assetId: 'song_001',
+  title: 'Song Title',
+  artist: 'Artist Name',
+  mediaImage: 'https://example.com/cover.jpg',
+  duration: 240000   // ms
+});
+
+// Set playback state
+await session.setAVPlaybackState({
+  state: AVSessionManager.PlaybackState.PLAYBACK_STATE_PLAY,
+  position: { elapsedTime: 0, updateTime: Date.now() },
+  speed: 1.0
+});
+
+// Register control commands BEFORE activating
+session.on('play', () => { /* resume playback */ });
+session.on('pause', () => { /* pause playback */ });
+session.on('playNext', () => { /* next track */ });
+session.on('playPrevious', () => { /* previous track */ });
+session.on('seek', (position: number) => { /* seek to position ms */ });
+
+// Activate — must be called AFTER metadata + commands are set
+await session.activate();
+```
+
+### Background playback requirements
+
+For media streams (`MUSIC`/`MOVIE`/`AUDIOBOOK`/`GAME`):
+1. Create AVSession (as above)
+2. Request `AUDIO_PLAYBACK` long-running task via Background Tasks Kit
+3. Both are **mandatory** — missing either one causes background audio to be silenced
+
+### Unsupported commands
+
+Use `session.off()` to unregister commands your app doesn't support. The system playback center will gray out corresponding buttons.
+
+```ts
+session.off('playPrevious');  // no "previous" button
+session.off('toggleFavorite'); // no favorite button
+```
+
+## Resource access — `$r()` and `$rawfile()`
+
+### Resource directory structure
+
+```
+resources/
+├─ base/                    # default resources (always matched)
+│  ├─ element/              # string.json, color.json, float.json, etc.
+│  ├─ media/                # images, audio, video
+│  └─ profile/              # custom JSON config files
+├─ zh_CN/element/           # Chinese locale override
+├─ en_US/element/           # English locale override
+├─ dark/element/            # dark mode override
+├─ rawfile/                 # raw files (not compiled, accessed by path)
+└─ resfile/                 # installed to sandbox, read-only access
+```
+
+Qualifier order: MCC_MNC → language_script_region → orientation → device → colorMode → density.
+
+### Accessing resources
+
+```ts
+// App resources: $r('app.type.name')
+Text($r('app.string.hello_world'))
+  .fontSize($r('app.float.text_size_body'))
+  .fontColor($r('app.color.primary'))
+Image($r('app.media.app_icon'))
+
+// With format args: $r('app.string.greeting', 'Alice', 5)
+// For string "Hello, %1$s! You have %2$d messages."
+Text($r('app.string.greeting', 'Alice', 5))
+
+// Plural: $r('app.plural.item_count', count, count)
+Text($r('app.plural.item_count', 2, 2))  // "2 items"
+
+// Raw files: $rawfile('path/relative/to/rawfile/')
+Image($rawfile('images/banner.png'))
+
+// System resources: $r('sys.type.name')
+Text('Hello')
+  .fontColor($r('sys.color.ohos_id_color_emphasize'))
+  .fontSize($r('sys.float.ohos_id_text_size_headline1'))
+
+// Cross-HSP module resources: $r('[moduleName].type.name')
+Text($r('[library].string.shared_text'))
+```
+
+### Programmatic access via ResourceManager
+
+```ts
+const resMgr = getContext(this).resourceManager;
+const str = resMgr.getStringByNameSync('hello_world');
+const rawFd = resMgr.getRawFd('data.json');  // returns {fd, offset, length}
+```
+
+### Application file paths (Context properties)
+
+| Context property | Path | Purpose |
+|---|---|---|
+| `filesDir` | `base/files/` | Persistent app data (survives app updates) |
+| `cacheDir` | `base/cache/` | Cache (system may auto-clean when space low) |
+| `tempDir` | `base/temp/` | Temp files (cleaned on app exit) |
+| `databaseDir` | `database/` | Database files (relationalStore, etc.) |
+| `preferencesDir` | `base/preferences/` | Preferences KV store |
+| `bundleCodeDir` | `bundle/` | Installed HAP resources (read-only) |
+| `distributedFilesDir` | `distributedfiles/` | Cross-device shared files |
