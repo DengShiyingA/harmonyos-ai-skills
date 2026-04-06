@@ -4,7 +4,7 @@
 
 <img src="./assets/en/hero-banner.svg" alt="HarmonyOS AI Skills" width="100%"/>
 
-# 🧠 HarmonyOS AI Skills
+# 🧠 HarmonyOS AI Skill
 
 ### A HarmonyOS NEXT (鸿蒙) knowledge pack for 11+ AI coding assistants
 
