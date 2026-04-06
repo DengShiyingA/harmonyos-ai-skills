@@ -2814,3 +2814,65 @@ await recorder.release();
 ```
 
 For background playback: must create AVSession + request AUDIO_PLAYBACK long-running task (see AVSession Kit section).
+
+## Image Kit — decode, transform, encode
+
+### Decode image to PixelMap
+
+```ts
+import { image } from '@kit.ImageKit';
+import { fileIo as fs } from '@kit.CoreFileKit';
+
+// From file path
+const imageSource = image.createImageSource(context.filesDir + '/photo.jpg');
+const pixelMap = await imageSource.createPixelMap({
+  editable: true,
+  desiredPixelFormat: image.PixelMapFormat.RGBA_8888
+});
+
+// From file descriptor
+const file = fs.openSync(filePath, fs.OpenMode.READ_ONLY);
+const imageSource2 = image.createImageSource(file.fd);
+
+// From ArrayBuffer (e.g., from network response)
+const imageSource3 = image.createImageSource(arrayBuffer);
+
+// From rawfile
+const rawFd = context.resourceManager.getRawFd('image.png');
+const imageSource4 = image.createImageSource(rawFd);
+
+// Get image info
+const info = await pixelMap.getImageInfo();
+console.info(`${info.size.width} x ${info.size.height}`);
+```
+
+### PixelMap transforms
+
+```ts
+pixelMap.crop({ x: 0, y: 0, size: { width: 400, height: 400 } });  // crop
+pixelMap.scale(0.5, 0.5);                                           // scale to 50%
+pixelMap.rotate(90);                                                 // rotate 90° clockwise
+pixelMap.flip(true, false);                                          // horizontal flip
+pixelMap.flip(false, true);                                          // vertical flip
+pixelMap.opacity(0.5);                                               // set 50% opacity
+pixelMap.translate(100, 100);                                        // offset by 100px
+```
+
+### Encode PixelMap to file
+
+```ts
+import { image } from '@kit.ImageKit';
+
+const packer = image.createImagePacker();
+const packOpts: image.PackingOption = { format: 'image/jpeg', quality: 90 };
+const data: ArrayBuffer = await packer.packing(pixelMap, packOpts);
+// Write data to file via fs.writeSync
+packer.release();
+```
+
+### Release resources
+
+```ts
+pixelMap.release();
+imageSource.release();
+```
