@@ -143,6 +143,30 @@ class User { constructor(public id: number, public name: string) {} }
 // const user: any = { id: 1, name: 'A' }
 ```
 
+### Naming conventions (official coding style guide)
+
+| Element | Convention | Example |
+|---|---|---|
+| Classes, Structs, Enums | **UpperCamelCase** | `PersonInfo`, `ColorType` |
+| Variables, Parameters, Methods | **lowerCamelCase** | `userName`, `getUserInfo()` |
+| Constants | **UPPER_SNAKE_CASE** | `MAX_VALUE`, `DEFAULT_TIMEOUT` |
+| Boolean variables | Prefix with `is`, `has`, `can` | `isVisible`, `hasPermission` |
+
+Formatting: 2-space indent, max 120 chars/line, K&R braces, always use `{}` for if/for/while.
+
+### High-performance ArkTS rules (from official best practices)
+
+1. Use `const` for unchanging values — enables engine optimization
+2. Never mix int and float in same variable — `let n = 1; n = 1.1;` causes boxing overhead
+3. Use TypedArrays (`Int8Array`, `Float32Array`) for numerical computation
+4. Avoid sparse arrays — `arr[9999] = 0` forces hash-table storage (much slower)
+5. Don't mix types in arrays — `[1, "a", 2]` deoptimizes
+6. Cache property lookups outside hot loops
+7. Avoid exception throwing in perf-critical loops — use sentinel values
+8. Minimize closures in hot paths — pass variables via function params instead
+9. Use Array methods (`forEach`, `map`, `filter`, `reduce`) — internally optimized
+10. Keep `build()` pure and declarative — no side effects, load data in `aboutToAppear()`
+
 ## ArkUI — declarative UI
 
 ### Custom component basics
@@ -327,7 +351,29 @@ Arrays of `@Observed` instances require `@ObjectLink` in the row component — p
 - `@Prop` creates **deep copy** on every update — for large objects, prefer `@Link` (by reference) or `@ObjectLink`
 - `@Link` is preferred for inter-component communication — avoids unnecessary re-renders
 - `@Observed` + `@ObjectLink` for nested objects — fine-grained property observation
+- `@ObjectLink` is **READ-ONLY** — cannot reassign whole object (`this.task = new Task()` breaks binding)
 - Avoid `@StorageLink` for frequently-changing data — global state changes propagate to ALL subscribers
+- **Observation depth (V1):** `@State`/`@Prop`/`@Link` observe ONLY first-level properties. Nested changes are NOT detected. Array: only push/splice/reassign/length, NOT item mutations.
+
+### V2 state decorators (API 12+)
+
+| V1 | V2 replacement | Change |
+|---|---|---|
+| `@Component` | `@ComponentV2` | Clearer semantics |
+| `@State` | `@Local` | Cannot be initialized externally — internal state only |
+| `@Observed` + `@ObjectLink` | `@ObservedV2` + `@Trace` | **Deep observation** across multiple nested levels |
+| `@Watch` | `@Monitor('prop')` | More precise deep listener |
+| `AppStorage` | `AppStorageV2` | Unified with `@ObservedV2` + `@Trace` |
+
+```ts
+@ObservedV2
+class UserInfo {
+  @Trace name: string = '';    // changes to this trigger UI refresh
+  @Trace age: number = 0;     // changes to this trigger UI refresh
+  address: string = '';        // NO @Trace → changes do NOT trigger refresh
+}
+```
+Rules: `@ObservedV2` and `@Trace` must be used together (either alone has no effect). Only `@Trace`-decorated properties participate in UI rendering.
 
 ### Builders, styles, extends
 
@@ -360,6 +406,38 @@ Column() { Label('x') } .Card()
 ```
 
 The older `router` module (`@ohos.router`) still works but `Navigation` + `NavPathStack` is the modern API for HarmonyOS NEXT.
+
+**NavPathStack full API:**
+```ts
+// Push
+pathStack.pushPath({ name: 'Page', param: data });
+pathStack.pushPathByName('Page', data);
+pathStack.pushPathByName('Page', data, (popInfo) => {
+  console.info('Pop result: ' + JSON.stringify(popInfo.result));
+});
+
+// Pop, Replace, Remove
+pathStack.pop();
+pathStack.replacePath({ name: 'Page', param: data });
+pathStack.removeIndex(0);
+pathStack.movePageToTop('Page');
+
+// Query
+pathStack.getParamByIndex(index);
+pathStack.getParamByName('Page');
+pathStack.getAllPathName();
+pathStack.size();
+```
+
+**Route interception:**
+```ts
+pathStack.setInterception({
+  willShow: (from, to, operation) => { /* validate/redirect */ },
+  didShow: (from, to, operation) => { /* analytics */ }
+});
+```
+
+Display modes: **Stack** (single column), **Split** (two columns), **Auto** (adaptive, 600vp threshold).
 
 ## HarmonyOS Kits (common imports)
 
@@ -739,10 +817,29 @@ function isTablet(): boolean {
 ## ArkCompiler — runtime details
 
 - **AOT mode** — static type info generates optimized native machine code; no JIT warm-up
-- **LiteActor concurrency** — lightweight actor model; shared immutable objects avoid copy overhead
-- **Taskpool / Worker** — two concurrency APIs:
-  - `taskpool.execute(task)` — fire-and-forget parallel tasks (preferred)
-  - `new worker.ThreadWorker(script)` — long-lived background threads
+- **LiteActor concurrency** — Actor model with isolated memory per thread; communication via message passing
+
+### TaskPool vs Worker
+
+| Feature | TaskPool | Worker |
+|---|---|---|
+| Thread management | Automatic (create/reuse/destroy) | Manual lifecycle |
+| Max threads | Auto-scaled to physical cores | Max 64 per process |
+| Task duration limit | **3 minutes** (excluding async I/O) | Unlimited |
+| Priority | HIGH / MEDIUM / LOW / IDLE | API 18+ only |
+| Cancellation | Supported | Not supported |
+| Thread reuse | Yes | No |
+| Task groups | Yes | No |
+| Delayed/periodic | Yes | No |
+
+**Use Worker when:** tasks exceed 3 minutes, need persistent state, or strongly associated synchronous tasks.
+
+### @Concurrent rules
+- **Required** on all TaskPool functions, **only in `.ets` files**
+- Allowed: regular functions, async functions
+- **Prohibited:** arrow functions, class methods, anonymous functions, generator functions
+- **No closure variables** — cannot reference outer scope; only local vars, params, and imports
+- Cannot call other same-file functions (closure violation) — must import them
 
 ```ts
 import { taskpool } from '@kit.ArkTS';
@@ -751,7 +848,45 @@ import { taskpool } from '@kit.ArkTS';
 function heavyCalc(n: number): number { return n * n; }
 
 const result = await taskpool.execute(heavyCalc, 42);
+
+// With priority
+const task = new taskpool.Task(heavyCalc, 42);
+await taskpool.execute(task, taskpool.Priority.HIGH);
+
+// Delayed and periodic
+taskpool.executeDelayed(heavyCalc, 2000, 42);      // after 2s
+taskpool.executePeriodically(heavyCalc, 5000, 42);  // every 5s
 ```
+
+### @Sendable — shared-heap reference passing
+Objects on SharedHeap (process-level, all threads can access) — **100x faster** than serialization for 1MB data.
+
+```ts
+@Sendable
+class SharedData {
+  value: number = 0;  // must be explicitly initialized
+}
+```
+
+**Constraints:** Can only inherit from Sendable classes. Property types limited to: primitives, Sendable classes, `@arkts.collections` containers. Cannot add/delete properties at runtime. No computed properties. No `#` private (use `private` keyword).
+
+### Worker pattern
+```ts
+// Main thread
+const worker = new worker.ThreadWorker('entry/ets/workers/myWorker.ets');
+worker.postMessage({ type: 'compute', data: payload });
+worker.onmessage = (e) => { /* handle result */ };
+worker.terminate();
+
+// Worker thread (myWorker.ets)
+const workerPort = worker.workerPort;
+workerPort.onmessage = (e) => {
+  const result = processData(e.data);
+  workerPort.postMessage(result);
+};
+```
+
+**Both TaskPool and Worker:** Cannot access AppStorage or UI libraries from worker threads. Different thread contexts prevent context object sharing.
 
 ## OHPM — package manager
 
