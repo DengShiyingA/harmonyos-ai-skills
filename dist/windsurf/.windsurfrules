@@ -3,16 +3,6 @@
 
 Covers HarmonyOS 6.0.2(22) / HarmonyOS NEXT native app development — the Huawei mobile OS family that runs independently of Android (AOSP-free since HarmonyOS NEXT, released 2024). Primary language is **ArkTS** (a strict, statically-checked superset of TypeScript) and the primary UI framework is **ArkUI** (declarative, state-driven). HarmonyOS 6.0 adds system-level "Immersive Light Perception" visual effects (液态玻璃/沉浸光感视效).
 
-## When to use this skill
-
-- Building, reading, or refactoring HarmonyOS / HarmonyOS NEXT apps (.hap / .hsp / .har modules)
-- Writing ArkTS + ArkUI components with declarative `@Component`/`build()` syntax
-- Questions about Stage model abilities, lifecycle, routing, or configuration files
-- Debugging state-management decorators, rendering, or Observable propagation
-- Choosing and calling HarmonyOS Kits (Ability, ArkUI, Network, Media, Location, HiAI, etc.)
-- Building 原子化服务 (atomic services / meta-services) or cross-device distributed features
-- Consulting the official samples catalog at https://developer.huawei.com/consumer/cn/samples/
-
 ## Platform snapshot
 
 | Item | Value |
@@ -721,13 +711,6 @@ async function fetchJson(url: string): Promise<string> {
 
 Declare in `module.json5` → `requestPermissions`. For user-granted permissions, request at runtime via `abilityAccessCtrl.createAtManager().requestPermissionsFromUser(context, [...])`.
 
-### Persistent storage options
-
-- **Preferences** — lightweight key-value (`@kit.ArkData` → `preferences`)
-- **Relational Store** — SQLite (`relationalStore`)
-- **Distributed KV Store** — cross-device sync
-- **File I/O** — `@kit.CoreFileKit` `fileIo` / sandbox paths
-
 ## Atomic Services / Meta-Services (原子化服务 / 元服务)
 
 Installation-free, small (≤10MB) apps launched from:
@@ -753,71 +736,7 @@ Configured via `module.json5` with `"installationFree": true`. Build-time they p
 
 Distribute via AppGallery Connect (华为应用市场).
 
-## Sample catalog (developer.huawei.com/consumer/cn/samples)
-
-The official samples repo is organized by the following **10 official categories** (as shown on the HarmonyOS developer samples page):
-
-| 类别 | Category | What it covers |
-|---|---|---|
-| **HarmonyOS特征** | HarmonyOS Features | Platform-differentiating capabilities: 一多 (one-develop multi-deploy) responsive layout, 分布式流转 cross-device continuation, 原子化服务 / 服务卡片 atomic services & service cards, 超级终端 super device, 方舟编译器 Ark compiler features, 鸿蒙智联 HarmonyOS Connect |
-| **技术质量** | Technical Quality | Performance optimization (startup time, frame rate, memory), stability (crash/ANR), power consumption, security hardening, code quality, HiAppEvent / HiLog diagnostics, DFX capabilities |
-| **应用框架开发** | Application Framework | UIAbility / ExtensionAbility lifecycle, Ability routing & want, AppStartup, state management (@State/@Link/@Provide/@Observed), ArkUI components & layouts, Navigation / NavPathStack, Router, window management, internationalization, resource management, notifications, background tasks |
-| **系统开发** | System Development | Power/battery APIs, telephony (call/SMS), account system, device management, settings, accessibility, input method, wallpaper, system apps, low-level OS integration |
-| **媒体开发** | Media Development | AVPlayer / AVRecorder audio & video playback/recording, camera (CameraKit), image codec (ImageKit), media library, AVSession, audio focus, DRM, HDR |
-| **图形开发** | Graphics Development | ArkGraphics 2D, XComponent + native OpenGL ES / Vulkan, 3D rendering, Canvas, animations & transitions, effects, WebGL, SVG, drawing APIs |
-| **应用服务开发** | Application Service | Location (LocationKit / geoLocationManager), maps, push notifications, payments, account sign-in (Huawei ID), sharing, scanning, health/fitness, wallet, in-app purchase |
-| **AI功能开发** | AI Function Development | HiAI Foundation Kit, CoreVisionKit (image classification, OCR, face detection), SpeechKit (ASR/TTS), natural language, MindSpore Lite on-device inference, AI image enhancement, generative models |
-| **应用专项测试** | Application Testing | Unit testing (ohUnit / Hypium), UI automation testing, performance testing, compatibility testing, monkey / stress testing, smartperf profiling, DevEco Testing |
-| **开发工具** | Development Tools | DevEco Studio plugins & workflows, hvigor build scripts, ohpm package management, hdc device connector, Previewer, Profiler, Code Linter, debugging & logging tools |
-
-> Browse the live catalog at https://developer.huawei.com/consumer/cn/samples/ — filter by category or search by Kit name / API (e.g. "relationalStore", "FormExtensionAbility", "AVPlayer").
-
-**When helping the user pick a sample:**
-1. Identify which of the 10 categories the feature belongs to
-2. Narrow by the specific Kit (AbilityKit, MediaKit, HiAIVisionKit, LocationKit, etc.)
-3. Match by API name or scenario (e.g. "service card" → 应用框架开发 + FormExtensionAbility)
-
-## Multi-device (一多) responsive layout
-
-HarmonyOS supports a single codebase across phone, tablet, 2-in-1, watch, smartscreen, and automotive. Use breakpoints in **vp** (not px).
-
-### Breakpoints
-
-| Breakpoint | vp width | Target |
-|---|---|---|
-| xs | < 320 | watch |
-| sm | 320–600 | phone portrait |
-| md | 600–840 | phone landscape / small tablet |
-| lg | 840–1440 | tablet / 2-in-1 |
-| xl | ≥ 1440 | large screen |
-
-**Always convert px → vp before comparing:**
-```ts
-import { display } from '@kit.ArkUI';
-function getBreakpoint(): string {
-  const dm = display.getDefaultDisplaySync();
-  const w = dm.width / dm.densityPixels; // vp
-  if (w < 600) return 'sm';
-  if (w < 840) return 'md';
-  return 'lg';
-}
-```
-
-### GridRow / GridCol (recommended for responsive grids)
-
-```ts
-GridRow({ columns: { sm: 4, md: 8, lg: 12 }, gutter: { x: 12 } }) {
-  GridCol({ span: { sm: 4, md: 4, lg: 6 } }) { LeftPanel() }
-  GridCol({ span: { sm: 4, md: 4, lg: 6 } }) { RightPanel() }
-}
-```
-
-### Foldable / hover mode
-Listen for display change and re-check breakpoint:
-```ts
-display.on('change', (_id: number) => { this.bp = getBreakpoint(); });
-display.off('change');
-```
+Official samples: https://developer.huawei.com/consumer/cn/samples/
 
 ## sys.symbol — icon glyph system
 
@@ -1063,38 +982,9 @@ export default function abilityTest() {
 
 **Key assertions:** `assertEqual(v)` · `assertContain(v)` · `assertTrue()` · `assertFalse()` · `assertNull()` · `assertUndefined()` · `assertNaN()` · `assertInstanceOf(type)` · `assertThrowError(fn)` · `assertDeepEquals(v)` · `assertClose(v, tolerance)` · `assertLarger(v)` · `assertLess(v)` · `not()` (negation) · `assertPromiseIsResolved()` · `assertPromiseIsRejected()`
 
-### UiTest — UI automation
+Test files in `entry/src/ohosTest/ets/test/`. For UI automation, see the **UiTest** section below.
 
-```ts
-import { Driver, ON } from '@kit.TestKit';
-
-it('ui_test', 0, async () => {
-  let driver = Driver.create();
-
-  let btn = await driver.findComponent(ON.text('Submit'));
-  await btn.click();
-
-  let input = await driver.findComponent(ON.id('username'));
-  await input.inputText('test_user');
-
-  await driver.assertComponentExist(ON.text('Success'));
-});
-```
-
-**ON selectors:** `.text()` · `.id()` · `.type()` · `.above()` · `.below()` · `.leftOf()` · `.rightOf()`
-
-**Component actions:** `click()` · `doubleClick()` · `longClick()` · `swipe()` · `drag()` · `inputText()` · `setText()` · `keyEvent()`
-
-Test files in `entry/src/ohosTest/ets/test/`. Always `await` UiTest async APIs; component references become stale after UI changes.
-
-## 仓颉 (Cangjie) — alternative language (Beta)
-
-| | ArkTS | Cangjie |
-|---|---|---|
-| Status | **Production** (use this now) | **Beta / developer preview** |
-| Base | TypeScript superset | New language (Huawei-designed) |
-| Key feature | Familiar TS syntax, strict AOT typing | Concurrent GC, embedded AgentDSL for AI |
-| Use for | All current HarmonyOS NEXT apps | Experimentation only until stable |
+**仓颉 (Cangjie)** is Huawei's new language (beta) — use ArkTS for all production apps until Cangjie is stable.
 
 ## ArkCompiler — runtime details
 
@@ -1214,144 +1104,23 @@ OHPM Central Repository: https://developer.huawei.com/consumer/cn/deveco-service
 4. Build release HAP/APP bundle: `hvigorw assembleApp`
 5. Upload to **AppGallery Connect** for review
 
-## Best practices (official)
+## Key references
 
-Portal: https://developer.huawei.com/consumer/cn/best-practices
-Overview: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-best-practices-overview
-
-### By topic
-
-**Performance**
-- ArkTS high-perf programming: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-arkts-high-performance
-- Layout optimization: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-improve-layout-performance
-- Component drawing optimization: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-pptimized-component-drawing
-- High-load frame rendering: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-dispose-highly-loaded-component-render
-- Memory analysis: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-analyze-memory-problem
-- Runtime performance detection: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-performance-runtime-detection
-
-**Stability**
-- Stability overview: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-stability-overview
-- Crash detection: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-stability-runtime-crash-detection
-- JS memory leak detection: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-stability-js-memleak-detection
-- Thread leak detection: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-stability-thread-leak-detection
-
-**Power / Battery**
-- Power optimization: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-application-power-optimization
-- Power testing: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-application-power-test
-
-**Media (Audio/Video)**
-- AVPlayer basic control: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-avplayer-basic-control
-- AVPlayer network video: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-avplayer-embeded-network-video
-- AudioCapturer recording: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-audio-record-base-on-audiocapturer
-- AVRecorder recording: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-audio-record-base-on-avrecorder-arkts
-- Video playback optimization: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-online-video-playback-lags-practice
-- Custom camera recording: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-custom-camera-video
-- Live stream audio call: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-hmos-live-stream-audio-call
-
-**Cross-device / 自由流转**
-- Free flow overview: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-hopping
-- App continuation: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-continue-cast
-- Cross-device migration: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-cross-end-migration
-
-**Multi-device**
-- PC app development: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-pc-guide
-- Wearable development: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-wear
-
-**UI / Layout**
-- Custom dialogs: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-customdialog-selection-and-development
-- Custom fonts: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-custom-font-settings
-- Soft keyboard adaptation: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-keyboard-layout-adapt
-
-**Security**
-- App security coding: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-harmony-application-security
-- ArkWeb security: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-arkweb-component-security
-
-**Web**
-- Web cross-domain: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-cross-domain-solutions-for-web-pages
-- Web performance: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-web-performance-optimization
-
-## Codelabs (hands-on tutorials)
-
-Portal: https://developer.huawei.com/consumer/cn/codelabsPortal/serviceTypes
-
-| Codelab | Topic |
-|---|---|
-| [Hello World](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_Next-HelloWorld) | Getting started |
-| [ArkTS Algorithm](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_NEXT-ArkTSAlgorithm) | ArkTS basics |
-| [Account Kit Login](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_NEXT-AccountKit-QuickLogin) | One-click Huawei ID login |
-| [Core Vision Kit](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_Next-CoreVisionKit) | ML / image recognition |
-| [Scan Kit](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_ScanKit-Codelab-Clientdemo-ArkTS) | QR/barcode scanning |
-| [Push Token](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_NEXT-Push-Get-Token) | Push notifications |
-| [Payment Kit](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_NEXT-Paymentkit) | In-app payment |
-| [Live View Delivery](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_NEXT-Live-View-Delivery) | Lock-screen live activity |
-| [Pedometer App](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_NEXT-PedometerApp) | Health/fitness sensors |
-| [Ads Kit](https://developer.huawei.com/consumer/cn/codelabsPortal/carddetails/tutorials_AdsKit-Native-ArkTS) | Native ads integration |
-
-## Training & certification
-
-- HarmonyOS basic cert: https://developer.huawei.com/consumer/cn/training/dev-cert-detail/101666948302721398
-- HarmonyOS advanced cert: https://developer.huawei.com/consumer/cn/training/dev-cert-detail/101684223987951077
-- Game dev cert: https://developer.huawei.com/consumer/cn/training/dev-cert-detail/101748228483629752
-- ArkUI development course (Part 1): https://developer.huawei.com/consumer/cn/training/course/video/C101727405259250407
-- ArkUI development course (Part 2): https://developer.huawei.com/consumer/cn/training/course/video/C101716428085146011
-- ArkTS syntax course: https://developer.huawei.com/consumer/cn/training/course/slightMooc/C101717496870909384
-- SDK open capabilities study path: https://developer.huawei.com/consumer/cn/training/study-path/101722568130701625
-
-## Useful references
-
-**Core docs**
-- Official docs home: https://developer.huawei.com/consumer/cn/doc/
-- Getting started: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/application-dev-guide
-- ArkTS language: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts
-- ArkTS high-perf: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-high-performance-programming
-- ArkUI framework: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkui
+- Official docs: https://developer.huawei.com/consumer/cn/doc/
+- Best practices: https://developer.huawei.com/consumer/cn/best-practices
+- Samples: https://developer.huawei.com/consumer/cn/samples/
+- Codelabs: https://developer.huawei.com/consumer/cn/codelabsPortal/serviceTypes
+- ArkTS guide: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts
+- ArkUI guide: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkui
 - State management: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-state-management-overview
-- Navigation & routing: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-set-navigation-routing
-- Animations: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-use-animation
+- Navigation: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-set-navigation-routing
 - Concurrency: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-concurrency
-- ArkData: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/data-mgmt-overview
-- GC / garbage collection: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/gc-introduction
-
-**Kit guides**
-- Account Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/account-kit-guide
-- IAP Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/iap-kit-guide
-- Payment Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/payment-kit-guide
-- Push Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/push-kit-guide
-- Location Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/location-kit
-- Scan Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/scan-kit-guide
-- Live View Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/live-view-kit-guide
-- Core Vision Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/core-vision-kit-guide
-- Ads Kit: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ads-kit-guide
-
-**IDE & tooling**
+- SDK / Kits: https://developer.huawei.com/consumer/cn/sdk
+- OHPM registry: https://developer.huawei.com/consumer/cn/deveco-service
 - DevEco Studio: https://developer.huawei.com/consumer/cn/deveco-studio/
-- DevEco Testing: https://developer.huawei.com/consumer/cn/deveco-testing
-- AI programming assistant (CodeGenie): https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-codegenie
-- Code debugging: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-code-debugging
-- Code linter: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-code-linter
-- ArkUI previewer: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-previewer-arkui
-- Layout inspector: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-arkui-inspector
-- Emulator: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-emulator-create
-- hvigorw CLI build: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-hvigor-commandline
-- Testing overview: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/app-testing-overview
-
-**Ecosystem**
-- SDK / Kit overview: https://developer.huawei.com/consumer/cn/sdk
-- OHPM package registry: https://developer.huawei.com/consumer/cn/deveco-service
-- Samples catalog: https://developer.huawei.com/consumer/cn/samples/
-- Knowledge map: https://developer.huawei.com/consumer/cn/app/knowledge-map
-- Quick-start Codelab: https://developer.huawei.com/consumer/cn/codelabsPortal/getstarted/101718800110527001
-- Design resources: https://developer.huawei.com/consumer/cn/design/resource
-- HarmonyOS Symbol icons: https://developer.huawei.com/consumer/cn/design/harmonyos-symbol
+- Symbol icons: https://developer.huawei.com/consumer/cn/design/harmonyos-symbol
 - AppGallery Connect: https://developer.huawei.com/consumer/cn/agconnect
-- App review policy: https://developer.huawei.com/consumer/cn/doc/app/50000
-- Meta-service review: https://developer.huawei.com/consumer/cn/doc/app/50129
-- Cangjie beta: https://developer.huawei.com/consumer/cn/activityDetail/cangjie-beta
-- Doc change log: https://developer.huawei.com/consumer/cn/doc/harmonyos-releases/doc-updates
-- API Diff (6.0.2): https://developer.huawei.com/consumer/cn/doc/harmonyos-releases/apidiff-602
-- Release overview (6.0): https://developer.huawei.com/consumer/cn/doc/harmonyos-releases/overview-600
-- StateStore best practice: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-global-state-management-state-store
-- ArkCompiler: https://developer.huawei.com/consumer/cn/arkcompiler
+- StateStore: https://developer.huawei.com/consumer/cn/doc/best-practices/bpta-global-state-management-state-store
 
 ## API 21 (SDK 6.0.1) — confirmed compile errors and fixes
 
