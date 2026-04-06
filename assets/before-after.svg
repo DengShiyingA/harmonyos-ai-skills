@@ -54,5 +54,5 @@
   <text x="680" y="580" font-size="13" fill="#D97757">  地道的 ArkTS + ArkUI 声明式写法，编译通过</text>
 
   <!-- Footer -->
-  <text x="640" y="625" font-size="14" font-weight="500" fill="#D97757" text-anchor="middle" opacity="0.6">github.com/DengShiyingA/harmonyos-ai-skills</text>
+  <text x="640" y="625" font-size="14" font-weight="500" fill="#D97757" text-anchor="middle" opacity="0.6">github.com/DengShiyingA/harmonyos-ai-skill</text>
 </svg>

@@ -16,9 +16,9 @@
 [![AI Tools](https://img.shields.io/badge/AI_Tools-11+-purple)](#supported-ai-tools)
 [![AGENTS.md](https://img.shields.io/badge/AGENTS.md-Standard-green)](https://agents.md)
 
-[![Stars](https://img.shields.io/github/stars/DengShiyingA/harmonyos-ai-skills?style=social)](https://github.com/DengShiyingA/harmonyos-ai-skills/stargazers)
-[![Last Commit](https://img.shields.io/github/last-commit/DengShiyingA/harmonyos-ai-skills)](https://github.com/DengShiyingA/harmonyos-ai-skills/commits)
-[![Issues](https://img.shields.io/github/issues/DengShiyingA/harmonyos-ai-skills)](https://github.com/DengShiyingA/harmonyos-ai-skills/issues)
+[![Stars](https://img.shields.io/github/stars/DengShiyingA/harmonyos-ai-skill?style=social)](https://github.com/DengShiyingA/harmonyos-ai-skill/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/DengShiyingA/harmonyos-ai-skill)](https://github.com/DengShiyingA/harmonyos-ai-skill/commits)
+[![Issues](https://img.shields.io/github/issues/DengShiyingA/harmonyos-ai-skill)](https://github.com/DengShiyingA/harmonyos-ai-skill/issues)
 
 <br/>
 
@@ -47,9 +47,9 @@ The problem isn't the AI — it's that no one's ever fed it HarmonyOS knowledge.
 ## ⚡ Quick start (Claude Code, 30 seconds)
 
 ```bash
-git clone https://github.com/DengShiyingA/harmonyos-ai-skills.git ~/src/harmonyos-ai-skills
+git clone https://github.com/DengShiyingA/harmonyos-ai-skill.git ~/src/harmonyos-ai-skill
 mkdir -p ~/.claude/skills
-ln -s ~/src/harmonyos-ai-skills/harmonyos-development ~/.claude/skills/harmonyos-development
+ln -s ~/src/harmonyos-ai-skill/harmonyos-development ~/.claude/skills/harmonyos-development
 # Restart Claude Code, then ask: "What skills are available?"
 ```
 
@@ -137,7 +137,7 @@ The two files differ only slightly: `plain/` is the raw Markdown; `system-prompt
 All `curl` commands below use a shell variable `$RAW` — run this once in your terminal first (it stays set for the rest of your session):
 
 ```bash
-export RAW=https://raw.githubusercontent.com/DengShiyingA/harmonyos-ai-skills/main
+export RAW=https://raw.githubusercontent.com/DengShiyingA/harmonyos-ai-skill/main
 ```
 
 ### Claude Code CLI
@@ -146,19 +146,19 @@ Pick **one** of the three options below:
 
 ```bash
 # Option A — quick copy (you get a static snapshot)
-git clone https://github.com/DengShiyingA/harmonyos-ai-skills.git ~/src/harmonyos-ai-skills
+git clone https://github.com/DengShiyingA/harmonyos-ai-skill.git ~/src/harmonyos-ai-skill
 mkdir -p ~/.claude/skills
-cp -r ~/src/harmonyos-ai-skills/harmonyos-development ~/.claude/skills/
+cp -r ~/src/harmonyos-ai-skill/harmonyos-development ~/.claude/skills/
 
 # Option B — symlink (recommended: auto-updates after `git pull`)
-git clone https://github.com/DengShiyingA/harmonyos-ai-skills.git ~/src/harmonyos-ai-skills
+git clone https://github.com/DengShiyingA/harmonyos-ai-skill.git ~/src/harmonyos-ai-skill
 mkdir -p ~/.claude/skills
-ln -s ~/src/harmonyos-ai-skills/harmonyos-development ~/.claude/skills/harmonyos-development
+ln -s ~/src/harmonyos-ai-skill/harmonyos-development ~/.claude/skills/harmonyos-development
 
 # Option C — project-local only (commit it so your whole team gets the skill)
 cd <your-harmonyos-project>
 mkdir -p .claude/skills
-cp -r ~/src/harmonyos-ai-skills/harmonyos-development .claude/skills/
+cp -r ~/src/harmonyos-ai-skill/harmonyos-development .claude/skills/
 ```
 
 After installing, **restart Claude Code**. To verify, ask it: *"What skills are available?"* — it should list `harmonyos-development`.
@@ -335,7 +335,7 @@ Other good probes:
 ## Repository layout
 
 ```
-harmonyos-ai-skills/
+harmonyos-ai-skill/
 ├─ .gitignore
 ├─ LICENSE
 ├─ README_EN.md
@@ -426,7 +426,7 @@ After editing the source file, run `./scripts/build-dist.sh` to regenerate every
 Unlikely — `SKILL.md` is ~1200 lines (~45 KB). Every listed tool accepts it. If you still hit a limit, trim sections from `dist/plain/harmonyos-knowledge.md` manually.
 
 **`curl` fails with 404.**
-The branch in the URL may have moved. Check `https://github.com/DengShiyingA/harmonyos-ai-skills/branches` and update `$RAW` accordingly.
+The branch in the URL may have moved. Check `https://github.com/DengShiyingA/harmonyos-ai-skill/branches` and update `$RAW` accordingly.
 
 **How do I update after the upstream repo changes?**
 See the *Updating to the latest version* section above.

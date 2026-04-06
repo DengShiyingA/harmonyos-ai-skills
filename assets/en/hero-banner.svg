@@ -90,7 +90,7 @@
   <text x="1030" y="430" font-size="20" fill="#6b5d50">AI tools</text>
 
   <!-- GitHub -->
-  <text x="850" y="520" font-size="15" font-weight="500" fill="#D97757">github.com/DengShiyingA/harmonyos-ai-skills</text>
+  <text x="850" y="520" font-size="15" font-weight="500" fill="#D97757">github.com/DengShiyingA/harmonyos-ai-skill</text>
 
   <!-- Bottom accent bar -->
   <rect x="0" y="632" width="1280" height="8" fill="url(#warm)"/>
