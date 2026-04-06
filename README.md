@@ -28,7 +28,7 @@ The problem isn't the AI — it's that no one's ever fed it HarmonyOS knowledge.
 
 <br/>
 
-[🚀 Install](#installation--detailed-instructions-per-tool) · [📖 What's Inside](#whats-inside-the-knowledge) · [🛠️ Supported Tools](#supported-ai-tools) · [✅ Verify It Works](#verifying-it-works)
+[🚀 Install](#installation) · [📖 What's Inside](#whats-inside-the-knowledge) · [🛠️ Supported Tools](#supported-ai-tools) · [✅ Verify It Works](#verifying-it-works)
 
 </div>
 
@@ -43,11 +43,11 @@ ln -s ~/src/harmonyos-ai-skills/harmonyos-development ~/.claude/skills/harmonyos
 # Restart Claude Code, then ask: "What skills are available?"
 ```
 
-Using a different tool? See [all install options below](#installation--detailed-instructions-per-tool).
+Using a different tool? See [all install options below](#installation).
 
 ---
 
-A portable knowledge pack that turns any AI coding assistant into a competent **HarmonyOS (鸿蒙) NEXT** engineer. Write the knowledge once — [`harmonyos-development/SKILL.md`](./harmonyos-development/SKILL.md) — and install it into every major AI coding tool via pre-built drop-in files.
+Write the knowledge once — [`harmonyos-development/SKILL.md`](./harmonyos-development/SKILL.md) — and install it into every major AI coding tool via pre-built drop-in files.
 
 <details>
 <summary><b>🤔 What is a "skill"?</b> (click to expand)</summary>
@@ -111,7 +111,7 @@ The two files differ only slightly: `plain/` is the raw Markdown; `system-prompt
 
 ---
 
-## Installation — detailed instructions per tool
+## Installation
 
 All `curl` commands below use a shell variable `$RAW` — run this once in your terminal first (it stays set for the rest of your session):
 
@@ -315,6 +315,7 @@ Other good probes:
 
 ```
 harmonyos-ai-skills/
+├─ .gitignore
 ├─ harmonyos-development/
 │  └─ SKILL.md                          ← Source of truth. Edit only here.
 ├─ scripts/
