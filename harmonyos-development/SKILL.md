@@ -1,6 +1,34 @@
 ---
 name: harmonyos-development
-description: Comprehensive guide to HarmonyOS / HarmonyOS NEXT (鸿蒙) native app development using ArkTS and the ArkUI declarative UI framework. Use this skill when the user asks about 鸿蒙开发 / 华为开发者 / HarmonyOS, creating apps with DevEco Studio, ArkTS language, ArkUI components, the Stage model (UIAbility, ExtensionAbility, AbilityStage, WindowStage), state-management decorators (@State, @Prop, @Link, @Provide, @Consume, @Observed, @ObjectLink, @Watch, @Builder, @Styles), HarmonyOS Kits (Ability Kit, ArkUI, ArkGraphics, Network Kit, Media Kit, HiAI Foundation Kit, Location Kit, etc.), HAP/HSP/HAR packaging, app.json5/module.json5 configuration, distributed/atomic services (原子化服务/元服务), or the HarmonyOS sample code repository on developer.huawei.com/consumer/cn/samples.
+description: >
+  Comprehensive guide to HarmonyOS / HarmonyOS NEXT (鸿蒙) native app development.
+  Use this skill when the user asks about: 鸿蒙开发 / 华为开发者 / HarmonyOS / ArkTS / ArkUI /
+  DevEco Studio / Stage model (UIAbility, ExtensionAbility, AbilityStage, WindowStage) /
+  state-management decorators (@State, @Prop, @Link, @Provide, @Consume, @Observed, @ObjectLink,
+  @Watch, @Builder, @Styles, @Extend, @StorageLink, @LocalStorageLink) /
+  V2 decorators (@ComponentV2, @Local, @ObservedV2, @Trace, @Monitor, AppStorageV2) /
+  component lifecycle (aboutToAppear, onDidBuild, aboutToReuse, aboutToRecycle, onPageShow) /
+  Navigation / NavPathStack / navDestination / router /
+  layout containers (Column, Row, Stack, Flex, RelativeContainer, GridRow, GridCol, List) /
+  animation (animateTo, .animation(), Curve, geometryTransition, spring) /
+  performance (LazyForEach, @Reusable, cachedCount, layout nesting) /
+  HarmonyOS Kits (Ability Kit, ArkUI, ArkGraphics, Network Kit, Media Kit, Location Kit,
+  Core Speech Kit, Core Vision Kit, Scan Kit, Push Kit, IAP Kit, Payment Kit, Live View Kit,
+  Camera Kit, Media Library Kit, and 50+ more) /
+  concurrency (TaskPool, Worker, @Concurrent, @Sendable, taskpool.execute) /
+  HAP/HSP/HAR packaging / app.json5 / module.json5 / oh-package.json5 / build-profile.json5 /
+  atomic services (原子化服务 / 元服务 / 服务卡片 / FormExtensionAbility) /
+  distributed features (流转 / cross-device continuation) /
+  multi-device responsive layout (一多 / breakpoints / foldable) /
+  stability (crash types / JS_ERROR / CPP_CRASH / APP_FREEZE / ErrorObserver / HiAppEvent) /
+  background tasks (BackgroundTasksKit / transient / continuous / deferred / backgroundMode) /
+  security (permissions / abilityAccessCtrl / HUKS / encryption levels) /
+  testing (arkxtest / @ohos/hypium / JsUnit / UiTest / Driver / ON) /
+  DevEco Studio 6.x setup (hvigor / hvigorw / build-profile) /
+  sys.symbol icons / OHPM / ohpm / ArkCompiler / 仓颉 / Cangjie /
+  publishing (AppGallery Connect / signing / hvigorw assembleApp) /
+  best practices / performance optimization / coding style /
+  samples catalog (developer.huawei.com/consumer/cn/samples)
 ---
 
 # HarmonyOS (鸿蒙) Development
