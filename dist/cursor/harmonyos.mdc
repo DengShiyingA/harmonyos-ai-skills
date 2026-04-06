@@ -164,6 +164,9 @@ Formatting: 2-space indent, max 120 chars/line, K&R braces, always use `{}` for 
 8. Minimize closures in hot paths — pass variables via function params instead
 9. Use Array methods (`forEach`, `map`, `filter`, `reduce`) — internally optimized
 10. Keep `build()` pure and declarative — no side effects, load data in `aboutToAppear()`
+11. Use `HashMap` instead of `Record` for key-value operations — faster lookup/insert
+12. Reduce multi-level indirect exports — prefer direct `export { foo } from './module'`
+13. Use lazy import (`import lazy { Foo } from './heavy'`) for modules not needed at startup
 
 ## ArkUI — declarative UI
 
@@ -2886,3 +2889,138 @@ packer.release();
 pixelMap.release();
 imageSource.release();
 ```
+
+## App Linking — deep links & app-to-app navigation
+
+### Configure deep link in module.json5
+
+```json5
+{
+  "module": {
+    "abilities": [{
+      "name": "EntryAbility",
+      "skills": [{
+        "entities": ["entity.system.home", "entity.system.browsable"],
+        "actions": ["ohos.want.action.home", "ohos.want.action.viewData"],
+        "uris": [{ "scheme": "https", "host": "example.com", "path": "/detail" }],
+        "domainVerify": true       // enable App Linking verification
+      }]
+    }]
+  }
+}
+```
+
+### Handle incoming link — cold start (onCreate)
+
+```ts
+import { url } from '@kit.ArkTS';
+
+export default class EntryAbility extends UIAbility {
+  private targetPage: string = '';
+  private linkParams: Record<string, string> = {};
+
+  onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+    this.parseUri(want);
+  }
+
+  private parseUri(want: Want): void {
+    if (want?.uri) {
+      const urlObj = url.URL.parseURL(want.uri);
+      this.linkParams = Object.fromEntries(urlObj.params.entries());
+      this.targetPage = urlObj.pathname;        // e.g. "/detail"
+    }
+  }
+
+  onWindowStageCreate(windowStage: window.WindowStage): void {
+    const page = this.targetPage === '/detail' ? 'pages/Detail' : 'pages/Index';
+    if (this.linkParams['id']) {
+      AppStorage.setOrCreate('linkId', this.linkParams['id']);
+    }
+    windowStage.loadContent(page);
+  }
+}
+```
+
+### Handle link — app already running (onNewWant)
+
+```ts
+onNewWant(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+  this.parseUri(want);
+  if (this.linkParams['id']) {
+    AppStorage.setOrCreate('linkId', this.linkParams['id']);
+    AppStorage.setOrCreate('newWantFlag', true);   // notify UI to navigate
+  }
+}
+```
+
+Page listens for `newWantFlag` via `@StorageLink` + `@Watch` and navigates accordingly.
+
+## Share Kit — cross-app content sharing
+
+```ts
+import { systemShare } from '@kit.ShareKit';
+import { uniformTypeDescriptor } from '@kit.ArkData';
+
+// Share a hyperlink
+const shareData = new systemShare.SharedData({
+  utd: uniformTypeDescriptor.UniformDataType.HYPERLINK,
+  content: 'https://example.com/article/123',
+  title: 'Article Title',
+  description: 'Article preview text',
+});
+const controller = new systemShare.ShareController(shareData);
+controller.show(this.context, {
+  previewMode: systemShare.SharePreviewMode.DEFAULT,
+  selectionMode: systemShare.SelectionMode.SINGLE,
+});
+```
+
+Supported UTD types: `HYPERLINK`, `PLAIN_TEXT`, `HTML`, `IMAGE` (pass `uri` from file), `FILE`.
+
+## Custom dialog — openCustomDialog & openBindSheet
+
+### openCustomDialog (general-purpose modal/non-modal)
+
+```ts
+import { ComponentContent } from '@kit.ArkUI';
+
+// 1. Define dialog content via @Builder
+@Builder
+function dialogContentBuilder(params: { message: string; close: () => void }) {
+  Column({ space: 16 }) {
+    Text(params.message).fontSize(16)
+    Button('OK').onClick(() => params.close())
+  }
+  .padding(24)
+  .backgroundColor(Color.White)
+  .borderRadius(16)
+}
+
+// 2. Open dialog
+const uiContext = this.getUIContext();
+const contentNode = new ComponentContent(uiContext, wrapBuilder(dialogContentBuilder), {
+  message: 'Hello',
+  close: () => uiContext.getPromptAction().closeCustomDialog(contentNode),
+});
+uiContext.getPromptAction().openCustomDialog(contentNode, {
+  alignment: DialogAlignment.Center,
+  isModal: true,
+  autoCancel: true,       // tap outside to close
+});
+```
+
+### openBindSheet (bottom half-modal sheet)
+
+```ts
+const uiContext = this.getUIContext();
+const sheetNode = new ComponentContent(uiContext, wrapBuilder(sheetBuilder), params);
+uiContext.openBindSheet(sheetNode, {
+  title: { title: 'Select Option' },
+  height: SheetSize.MEDIUM,
+  preferType: SheetType.BOTTOM,
+  detents: [SheetSize.MEDIUM, SheetSize.LARGE, 200],   // draggable heights
+  backgroundColor: '#F1F3F5',
+}, targetComponentId);
+```
+
+> **Note**: Do NOT use the deprecated `CustomDialog` or `@ohos.promptAction` — use `UIContext.getPromptAction().openCustomDialog()` and `UIContext.openBindSheet()` instead.
