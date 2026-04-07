@@ -1525,51 +1525,115 @@ ctrl.abort();
 
 > `responseType`: `'string'` | `'object'` | `'array_buffer'`. Mutual TLS requires API 11+.
 
-**@ohos/pulltorefresh** — pull-down refresh + load-more (placeholder, will be replaced with real README):
+**@ohos/pulltorefresh** — pull-down refresh + load-more (`ohpm install @ohos/pulltorefresh`, supports List/Scroll/Tabs/Grid/WaterFlow, API 12+):
 ```ts
-import { PullToRefresh } from '@ohos/pulltorefresh';
+import { PullToRefresh, PullToRefreshType } from '@ohos/pulltorefresh';
 
-PullToRefresh({
-  scroller: this.scroller,
-  onRefresh: () => new Promise(resolve => {
-    this.loadData().then(() => resolve('Done'));
-  }),
-  onLoadMore: () => new Promise(resolve => {
-    this.loadMore().then(() => resolve('Done'));
-  }),
-  customList: () => { this.ListBuilder(); },
-})
+@Component
+struct NewsPage {
+  @State data: string[] = ['Item 1', 'Item 2', 'Item 3'];
+  @State refreshing: boolean = false;
+
+  build() {
+    PullToRefresh({
+      pullToRefreshType: PullToRefreshType.LIST,
+      refreshing: $refreshing,
+      customList: () => { this.ListBuilder(); },
+      onRefresh: () => new Promise<string>((resolve) => {
+        setTimeout(() => {
+          this.data = ['Refreshed 1', 'Refreshed 2'];
+          resolve('Done');
+        }, 1000);
+      }),
+      onLoadMore: () => new Promise<string>((resolve) => {
+        setTimeout(() => {
+          for (let i = 0; i < 10; i++) this.data.push('New ' + this.data.length);
+          resolve('');
+        }, 1000);
+      }),
+      customLoad: null,
+      customRefresh: null,
+    })
+  }
+
+  @Builder ListBuilder() {
+    List() {
+      ForEach(this.data, (item: string) => {
+        ListItem() { Text(item).padding(16) }
+      })
+    }
+  }
+}
 ```
 
-**@ohos/lottie** — JSON animation (placeholder, will be replaced with real README):
+**@ohos/lottie** — JSON animation (`ohpm install @ohos/lottie`, also consider `@ohos/lottie-turbo` for 30%+ perf):
 ```ts
-import lottie from '@ohos/lottie';
+import lottie, { AnimationItem } from '@ohos/lottie';
 
-Canvas(this.canvasCtx).width('100%').height(300)
-  .onReady(() => {
-    this.anim = lottie.loadAnimation({
-      container: this.canvasCtx, renderer: 'canvas',
-      loop: true, autoplay: true, path: 'animation.json',
-    });
-  })
-  .onDisAppear(() => { lottie.destroy(); })
+@Component
+struct LottieDemo {
+  private canvasCtx = new CanvasRenderingContext2D(new RenderingContextSettings(true));
+  private animItem: AnimationItem | null = null;
+  private animName: string = 'myAnim';
+
+  aboutToDisappear(): void { lottie.destroy(); }
+
+  build() {
+    Canvas(this.canvasCtx).width(200).height(200)
+      .onReady(() => {
+        this.canvasCtx.imageSmoothingEnabled = true;
+        lottie.destroy(this.animName);
+        this.animItem = lottie.loadAnimation({
+          container: this.canvasCtx, renderer: 'canvas',
+          loop: true, autoplay: false, name: this.animName,
+          contentMode: 'Contain',
+          path: 'common/animation.json',   // relative to ets parent folder
+          frameRate: 30,
+        });
+        this.animItem.addEventListener('DOMLoaded', () => {
+          this.animItem?.play();
+        });
+      })
+  }
+}
+// Controls: .play() .pause() .stop() .goToAndPlay(frame, true) .setSpeed(2)
 ```
 
-**@ohos/imageknife** — image loading with cache/placeholder (placeholder, will be replaced with real README):
-```ts
-import { ImageKnife, ImageKnifeComponent, ImageKnifeOption } from '@ohos/imageknife';
+> Obfuscation: add `-keep ./oh_modules/@ohos/lottie` to obfuscation-rules.txt
 
-// Init once: ImageKnife.getInstance().init(context)
+**@ohos/imageknife** — image loading with cache (`ohpm install @ohos/imageknife`, API 18+; successor: `imageknifepro`):
+```ts
+import { ImageKnifeComponent, ImageKnifeAnimatorComponent } from '@ohos/imageknife';
+import { ImageKnife } from '@ohos/imageknife';
+
+// Init file cache once (in EntryAbility.onCreate)
+await ImageKnife.getInstance().initFileCache(context, 256, 256 * 1024 * 1024);
+
+// Basic usage
 ImageKnifeComponent({
   imageKnifeOption: {
-    loadSrc: 'https://example.com/avatar.jpg',
-    placeholderSrc: $r('app.media.placeholder'),
+    loadSrc: 'https://example.com/image.png',
+    placeholderSrc: $r('app.media.loading'),
     errorholderSrc: $r('app.media.error'),
+    objectFit: ImageFit.Auto,
+    border: { radius: 50 },           // circular crop
+    onLoadListener: {
+      onLoadSuccess: (data) => { console.info('Loaded'); return data; },
+      onLoadFailed: (err) => console.error('Failed: ' + err),
+    },
+    progressListener: (progress: number) => console.info('Progress: ' + progress),
   }
-}).width(80).height(80).borderRadius(40)
+}).width(100).height(100)
+
+// GIF / animated WebP
+ImageKnifeAnimatorComponent({
+  imageKnifeOption: { loadSrc: 'https://example.com/anim.gif' }
+}).width(300).height(300)
 ```
 
-**dayjs** — date formatting/manipulation (placeholder, will be replaced with real README):
+> Obfuscation: add `-keep ./oh_modules/@ohos/imageknife` to obfuscation-rules.txt
+
+**dayjs** — date formatting (`ohpm install dayjs`, standard npm API):
 ```ts
 import dayjs from 'dayjs';
 dayjs().format('YYYY-MM-DD HH:mm:ss');
