@@ -35,7 +35,7 @@
 
   <!-- Description -->
   <text x="80" y="390" font-size="16" fill="#8a7b6b">一份 Markdown 源文件，自动产出所有 AI 工具的配置</text>
-  <text x="80" y="414" font-size="16" fill="#8a7b6b">1200+ 行从官方文档提取的实质知识</text>
+  <text x="80" y="414" font-size="16" fill="#8a7b6b">4200+ 行从官方文档提取的实质知识</text>
 
   <!-- Tool pills row 1 -->
   <g font-size="13" font-weight="500" fill="#4a3f35">
@@ -80,10 +80,10 @@
   </g>
 
   <!-- Right side numbers -->
-  <text x="850" y="210" font-size="110" font-weight="800" fill="#D97757" letter-spacing="-3">1200+</text>
+  <text x="850" y="210" font-size="110" font-weight="800" fill="#D97757" letter-spacing="-3">4200+</text>
   <text x="850" y="252" font-size="20" fill="#6b5d50">行知识 · 从官方文档提取</text>
 
-  <text x="850" y="345" font-size="72" font-weight="800" fill="#c4956a" letter-spacing="-2">50+</text>
+  <text x="850" y="345" font-size="72" font-weight="800" fill="#c4956a" letter-spacing="-2">60+</text>
   <text x="1030" y="340" font-size="20" fill="#6b5d50">Kits</text>
 
   <text x="850" y="435" font-size="72" font-weight="800" fill="#E8C872" letter-spacing="-2">11+</text>

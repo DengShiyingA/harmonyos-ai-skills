@@ -74,25 +74,28 @@ A skill is a chunk of domain knowledge (in Markdown) that an AI coding tool load
 <img src="./assets/en/knowledge-map.svg" alt="Knowledge architecture" width="100%"/>
 </div>
 
-The skill teaches the AI everything needed to read, write, review, and debug HarmonyOS NEXT native apps (~1200 lines of dense, actionable knowledge):
+The skill teaches the AI everything needed to read, write, review, and debug HarmonyOS NEXT native apps (~4200 lines of dense, actionable knowledge, 237 sections, 105+ code examples):
 
-- **Language & framework** — ArkTS strictness rules, naming conventions, 10 high-performance coding rules (const, TypedArrays, sparse arrays, closures, caching), coding style guide
+- **Language & framework** — ArkTS strictness rules, naming conventions, 13 high-performance coding rules (const, TypedArrays, HashMap, lazy import, etc.), coding style guide
 - **App architecture** — Stage model: UIAbility, ExtensionAbility, AbilityStage, WindowStage lifecycles; module.json5 / app.json5 configuration
-- **ArkUI components** — component lifecycle (7 callbacks + execution order), 6 layout containers (Column/Row/Stack/Flex/RelativeContainer/List) with performance comparison, `@Reusable` component reuse pattern (69% faster)
-- **State management** — V1 decorators (`@State`, `@Prop`, `@Link`, `@Provide`/`@Consume`, `@Observed` + `@ObjectLink`, `@Watch`) + V2 decorators (`@ComponentV2`, `@Local`, `@ObservedV2` + `@Trace`, `@Monitor`) with observation depth rules and performance guidance
-- **Navigation** — `Navigation` + `NavPathStack` full API (push/pop/replace/remove/query/interception), 3 display modes, `@Builder` navDestination pattern
-- **Animation** — `animateTo()`, `.animation()`, Curve enum, spring curves, `geometryTransition` shared element transitions
-- **Performance** — `LazyForEach` with IDataSource, `cachedCount`, layout nesting rules (max 3 levels), `if/else` vs `.visibility()`, `Flex` vs `Column`/`Row`
-- **HarmonyOS Kits** — 50+ Kits across 7 categories (Application Framework, Services, System, Media, Graphics, AI, DevTools) with import keys
-- **Concurrency** — TaskPool vs Worker comparison, `@Concurrent` rules, `@Sendable` shared-heap mechanism (100x faster), Task priority/groups/delayed/periodic
-- **Stability** — crash type taxonomy (JS_ERROR/CPP_CRASH/APP_FREEZE/OOM), global error handler, HiAppEvent crash subscription
-- **Background tasks** — 4 types (transient/continuous/deferred/agent reminders), 9 background modes, frequency limits
-- **Security** — 10 coding rules, permission check/request pattern, data encryption levels (EL1–EL4)
-- **Testing** — arkxtest framework (JsUnit 16+ assertions, UiTest selectors/actions), test project structure
+- **ArkUI components** — component lifecycle (7 callbacks + execution order), layout containers with performance comparison, `@Reusable` component reuse, **Tabs navigation**, **Swiper carousel**, **WaterFlow**, **Grid**, **TextInput**, **AlertDialog/Toast**, 10 form components quick reference, AttributeModifier reusable styles
+- **State management** — V1 decorators (`@State`, `@Prop`, `@Link`, `@Provide`/`@Consume`, `@Observed` + `@ObjectLink`, `@Watch`) + V2 decorators (`@ComponentV2`, `@Local`, `@ObservedV2` + `@Trace`, `@Monitor`) + StateStore global state, with observation depth rules, batch update tips, decorator selection priority
+- **Navigation** — `Navigation` + `NavPathStack` full API, `Router` basic routing, `App Linking` deep links
+- **Animation** — `animateTo()`, `.animation()`, `keyframeAnimateTo()`, Curve enum, spring curves, `geometryTransition` shared element transitions, animation performance tips
+- **List operations** — pull-down refresh (Refresh), load-more (onReachEnd), swipe-to-delete (swipeAction), drag reorder, ListItemGroup sticky headers, scroll-to-bottom, maintain scroll position
+- **Performance** — `LazyForEach` + IDataSource, `@Reusable`, `cachedCount`, `onVisibleAreaChange`, cold start optimization (lazy import), memory optimization (LRUCache/Purgeable)
+- **HarmonyOS Kits** — 60+ Kits across 7 categories with import keys + code examples
+- **Kit detailed sections** — Camera Kit, Audio Kit, AVPlayer/AVRecorder, Image Kit (decode/transform/encode), Scan Kit, Account Kit, Payment Kit, Push Kit, Map Kit, Core Vision Kit (OCR/face/segmentation), Form Kit (service cards), AVSession Kit, Location Kit, Notification Kit, Share Kit
+- **Data persistence** — relationalStore (SQLite CRUD), preferences (KV storage), fileIo (file R/W), DocumentViewPicker (file picker)
+- **Networking** — HTTP requests, WebSocket, network connectivity monitoring, background upload/download (request.agent with resume)
+- **Concurrency** — TaskPool vs Worker comparison, `@Concurrent` rules, `@Sendable` shared-heap mechanism
+- **System capabilities** — permission request full flow (check→request→settings fallback), immersive window (expandSafeArea), dark mode (resource qualifiers/colorMode), keyboard adaptation (KeyboardAvoidMode), screen orientation, clipboard, custom fonts, desktop shortcuts, gesture conflict resolution (hitTestBehavior/priorityGesture), EventHub, startAbilityByType
+- **Web** — ArkWeb component, JS↔ArkTS bridge, cookie management, request interception
+- **Cross-device** — app continuation (onContinue/onCreate data migration), cross-module resource access (HAR/HSP)
+- **Engineering quality** — security coding rules + network security config (HTTPS/cert pinning), code obfuscation (ArkGuard), arkxtest testing (JsUnit + UiTest), 18 common gotchas
+- **Third-party libraries** — @ohos/axios (HTTP client), @ohos/pulltorefresh, @ohos/lottie (JSON animation), @ohos/imageknife (image caching), dayjs (date utils)
 - **Multi-device** — responsive breakpoints (xs/sm/md/lg/xl), GridRow/GridCol, foldable support
-- **Packaging** — HAP/HSP/HAR, atomic services, distributed features (流转)
-- **Tooling** — DevEco Studio 6.x setup (hvigor config), OHPM, ArkCompiler, Cangjie (beta)
-- **Samples & references** — 10-category sample catalog, 30+ best practice URLs by topic, 10 Codelabs, training courses, 80+ verified documentation links
+- **Packaging & tooling** — HAP/HSP/HAR, atomic services, DevEco Studio 6.x (hvigor), OHPM, ArkCompiler
 
 ---
 
@@ -423,7 +426,7 @@ After editing the source file, run `./scripts/build-dist.sh` to regenerate every
 - For paste-based tools (ChatGPT, DeepSeek, …), the system prompt is per-conversation; start a **new chat** after pasting.
 
 **Rule file is too long for the tool's context limit.**
-Unlikely — `SKILL.md` is ~1200 lines (~45 KB). Every listed tool accepts it. If you still hit a limit, trim sections from `dist/plain/harmonyos-knowledge.md` manually.
+Unlikely — `SKILL.md` is ~4200 lines (~150 KB). All major AI tools (Claude/GPT-4/Gemini etc.) accept it. If you hit a limit (e.g. some local small models), trim sections from `dist/plain/harmonyos-knowledge.md` manually.
 
 **`curl` fails with 404.**
 The branch in the URL may have moved. Check `https://github.com/DengShiyingA/harmonyos-ai-skill/branches` and update `$RAW` accordingly.
