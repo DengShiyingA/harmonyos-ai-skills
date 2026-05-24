@@ -70,6 +70,8 @@ ln -s ~/src/harmonyos-ai-skill/harmonyos-development ~/.claude/skills/harmonyos-
 
 ### 🪟 Windows（PowerShell 7+）
 
+> ⚠️ **必须在 PowerShell 中运行，不要用 CMD（命令提示符）**——`New-Item` 是 PowerShell 命令，CMD 不认识。右键开始菜单 → "Windows PowerShell（管理员）"。
+
 ```powershell
 # 先开启「开发人员模式」：设置 → 隐私和安全性 → 开发者选项 → 打开（一次性）
 git clone https://github.com/DengShiyingA/harmonyos-ai-skill.git $HOME\src\harmonyos-ai-skill
@@ -256,9 +258,9 @@ curl -o .continue/rules/harmonyos.md "$RAW/dist/continue/harmonyos.md"
 
 ### Cline / Roo Code
 
-1. Download the file: `curl -o harmonyos-instructions.md "$RAW/dist/cline/custom-instructions.md"`
-2. In VS Code: open Cline / Roo settings → **Custom Instructions**
-3. Paste the file contents into the workspace or global instructions field
+1. 下载文件：`curl -o harmonyos-instructions.md "$RAW/dist/cline/custom-instructions.md"`
+2. 在 VS Code 中打开 Cline / Roo 设置 → **Custom Instructions**
+3. 将文件内容粘贴到工作区或全局 Instructions 字段
 
 ### AGENTS.md standard (Codex CLI, opencode, Amp, Aider, Jules)
 

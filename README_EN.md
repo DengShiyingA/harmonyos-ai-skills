@@ -70,6 +70,8 @@ ln -s ~/src/harmonyos-ai-skill/harmonyos-development ~/.claude/skills/harmonyos-
 
 ### 🪟 Windows (PowerShell 7+)
 
+> ⚠️ **Must run in PowerShell, not CMD (Command Prompt)** — `New-Item` is a PowerShell cmdlet; CMD doesn't know it. Right-click Start → "Windows PowerShell (Admin)".
+
 ```powershell
 # First enable "Developer Mode" (one-time): Settings → Privacy & security → For developers → toggle on
 git clone https://github.com/DengShiyingA/harmonyos-ai-skill.git $HOME\src\harmonyos-ai-skill
